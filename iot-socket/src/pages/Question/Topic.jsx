@@ -1,7 +1,7 @@
-import { Button, Input } from 'antd'
+import { Button, Input, message } from 'antd'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { SetGlobal } from '../../redux/Global/GlobalSlice';
+import { SetGlobal, SetTopic } from '../../redux/Global/GlobalSlice';
 
 
 const Topic = () => {
@@ -11,9 +11,11 @@ const Topic = () => {
     const handleClick  = (e) =>{
         if(topicData !== ""){
             // Cho phép chuyển sang trang question
+            dispatch(SetTopic(topicData));
             dispatch(SetGlobal(true));
         }else{
             // Không cho phép
+            message.error("Vui lòng nhập chủ đề cần tạo")
             dispatch(SetGlobal(false));
         }
     } 
@@ -24,6 +26,7 @@ const Topic = () => {
             <Input 
                 className='w-[50%] rounded-[5px] ml-4'
                 onChange={(e) => setTopicData(e.target.value)}
+                onPressEnter={(e)=>handleClick()}
             >
             </Input>
         </div>
