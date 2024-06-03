@@ -1,32 +1,67 @@
-import { Button, Form, Input, message, Radio, Space, Upload } from 'antd';
+import { Button, Form, Input, message, Radio, Space, Spin, Upload } from 'antd';
 import React, { useState } from 'react'
-import { UploadOutlined } from '@ant-design/icons';
-import { useSelector } from 'react-redux';
+import { LoadingOutlined, UploadOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { createQuestionApi } from '../../redux/Question/QuestionApi';
+import { createTopicApi } from '../../redux/Topic/TopicApi';
 
 const ObjQuestion = {
+  topicId:"",
   questionName: "",
   questionTime: 0,
   imageUrl: "",
   listAnswers: []
 };
 
-
+const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 const Questiondetail = () => {
   const [rows, setRows] = useState([ObjQuestion]);
-  const TopicName = useSelector((state) => state.global.topic);
-  const Answer = [
+  const [loading, setLoading] = useState(false);
+  const TopicName = useSelector((state) => state.global.topic);  const Answer = [
     "A",
     "B",
     "C",
     "D"
   ];
-
+  const dispatch = useDispatch();
   const handleAddRow = () => {
     setRows([...rows, { ...ObjQuestion }]);
     console.log(rows);
   };
-  const HanldeSaveQuestion = () =>{
-
+  const HanldeSaveQuestion = async() =>{
+    debugger;
+    console.log(rows);
+    if(rows.length >0 && rows[0].listAnswers.length>0)
+      {
+        setLoading(true);
+        const topicReq = {
+          topicName : TopicName
+        }
+        const resultCreateTopic = await createTopicApi(topicReq,dispatch);
+        if(resultCreateTopic!=null && resultCreateTopic.data.isSuccess === true)
+          {
+            rows.forEach((e)=>(
+              e.topicId =  resultCreateTopic.data.data
+            ));
+            const resultCreateQuestion = await createQuestionApi(rows,dispatch);
+            if(resultCreateQuestion!=null && resultCreateQuestion.isSuccess === true)
+              {
+                message.success("Tạo bộ câu hỏi thành công!");
+              }
+              else
+              {
+                message.error("Tạo bộ câu hỏi thất bại!");
+              }
+          }
+          else{
+            message.error("Lỗi tạo chủ đề cho bộ câu hỏi, vui lòng kiểm tra lại!");
+          }
+          setLoading(false)
+      }
+      else
+      {
+        message.error("Vui lòng nhập thông tin!")
+      }
   }
 
   const getBase64 = (file, callback) => {
@@ -111,6 +146,7 @@ const Questiondetail = () => {
   }
   return (
     <div>
+      <Spin spinning={loading} indicator={antIcon}>
       <div className='flex justify-end mt-[20px] pr-[20px]'>
       <Button  onClick={HanldeSaveQuestion}>
         Lưu bộ câu hỏi
@@ -187,6 +223,7 @@ const Questiondetail = () => {
       </Button>
       </div>
     </div>
+      </Spin>
     </div>
 
   )

@@ -1,4 +1,4 @@
-import { getQuestionById, getQuestionByTopicId, QuestionError, QuestionStart } from "./QuestionSlice";
+import { getQuestionById, getQuestionByTopicId, QuestionError, QuestionStart,createQuestion } from "./QuestionSlice";
 import axios from 'axios'
 
 
@@ -7,10 +7,11 @@ export const createQuestionApi = async(question, dispatch) => {
     await dispatch(QuestionStart());
     try{
         const res = await axios.post(`${PK}/Question/create`, question);
-        await dispatch(createQuestionApi(res.data));
+       return res.data;
     }catch(err){
         await dispatch(QuestionError());
     }
+    return null;
 }
 
 export const GetQuestionByIdApi = async(questionId, dispatch) => {
