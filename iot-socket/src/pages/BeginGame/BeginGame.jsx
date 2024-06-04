@@ -1,9 +1,7 @@
-import { Button, Pagination, Table } from 'antd';
+import { Button, Pagination, Table, Switch } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { SearchTopicApi } from '../../redux/Topic/TopicApi';
 import { useDispatch, useSelector } from 'react-redux';
-import { ProTable } from "@ant-design/pro-components";
-
 
 const BeginGame = () => {
 
@@ -54,48 +52,75 @@ const BeginGame = () => {
     },
   ];
   const TopicResult = useSelector(state => state.topic.topic);
+  const PagingResult = useSelector(state => state.topic.topic.paging);
+  const [totalCount, setTotalCount] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const dispatch = useDispatch();
+
   useEffect(() => {
     const functionSearchTopic = async () => {
       return await SearchTopicApi(tableParams, dispatch)
     }
     functionSearchTopic();
-  }, [tableParams.paging?.pageIndex, tableParams.paging?.pageSize])
-  useEffect(()=>{
-    debugger
-    if(TopicResult.length >0)
-      {
-        setTableParams({
-          ...tableParams,
-          paging:{
-            ...tableParams.paging,
-            totalCount:TopicResult.paging.totalCount
-          }
-        })
-      }
-  },[TopicResult])
+  }, [tableParams])
 
-  const handleTableChange = (paging, filters, sorter) => {
-    debugger;
+  useEffect(() => {
+    if (PagingResult) {
+      setTotalCount(PagingResult.totalCount);
+      setPageSize(PagingResult.pageSize);
+    }
+  }, [PagingResult]);
+
+  const handleTableChange = (e) => {
+    setCurrentPage(e.defaultCurrent);
+    setPageSize(e.pageSize);
+    setTotalCount(e.total);
     setTableParams({
-      paging,
-      filters,
-      ...sorter,
-    });
+      paging:{
+        pageIndex: e.current,
+        pageSize: e.pageSize
+      }
+    })
   };
+  const [fixedTop, setFixedTop] = useState(false);
   return (
     <div>
       <div className="w-full flex justify-center mt-11">
-        <Table
-          rowKey={(e)=>e.topicId}
-          search={false}
-          options={false}
-          className="mt-5 w-[55%] "
-          columns={columns}
-          dataSource={TopicResult.data}
-          pagination={tableParams.paging}
-          onChange={handleTableChange}
-        />
+      <Table
+        columns={columns}
+        dataSource={TopicResult.data}
+        pagination={{
+          total: totalCount, // total number of items
+          pageSize: pageSize, // items per page
+          defaultCurrent: currentPage, // default initial page
+        }}
+        onChange = {(e) => handleTableChange(e)}
+        scroll={{
+          x: 1500,
+      }}
+      summary={() => (
+        <Table.Summary fixed={fixedTop ? 'top' : 'bottom'}>
+          <Table.Summary.Row>
+            <Table.Summary.Cell index={0} colSpan={2}>
+              <Switch
+                checkedChildren="Fixed Top"
+                unCheckedChildren="Fixed Top"
+                checked={fixedTop}
+                onChange={() => {
+                  setFixedTop(!fixedTop);
+                }}
+              />
+            </Table.Summary.Cell>
+          </Table.Summary.Row>
+        </Table.Summary>
+      )}
+      // antd site header height
+      sticky={{
+        offsetHeader: 64,
+      }}
+    />
       </div>
     </div>
   )

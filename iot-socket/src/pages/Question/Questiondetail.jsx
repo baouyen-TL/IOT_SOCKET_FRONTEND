@@ -17,7 +17,8 @@ const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 const Questiondetail = () => {
   const [rows, setRows] = useState([ObjQuestion]);
   const [loading, setLoading] = useState(false);
-  const TopicName = useSelector((state) => state.global.topic);  const Answer = [
+  const TopicName = useSelector((state) => state.global.topic);  
+  const Answer = [
     "A",
     "B",
     "C",

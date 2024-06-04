@@ -1,7 +1,7 @@
 
 import "./index.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import "antd/dist/reset.css";
+// import "antd/dist/reset.css";
 import Home from "./pages/Home/Home";
 import Question from "./pages/Question/Question";
 import Statistic from "./pages/Statistic/Statistic";
