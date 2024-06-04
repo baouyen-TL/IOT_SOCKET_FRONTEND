@@ -56,6 +56,7 @@ const dispatch = useDispatch();
   return (
     <div className="w-full flex justify-center mt-11">
     <Table
+    rowKey={(e)=>e.remoteId}
       search={false}
       options={false}
       className="mt-5 w-[55%] "
