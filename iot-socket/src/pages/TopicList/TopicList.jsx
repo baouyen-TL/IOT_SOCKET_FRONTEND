@@ -2,6 +2,7 @@ import { Button, Pagination, Table, Switch } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { SearchTopicApi } from '../../redux/Topic/TopicApi';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const TopicList = () => {
 
@@ -52,14 +53,15 @@ const TopicList = () => {
     },
   ];
 
+  const navigate = useNavigate();
   const handleButtonClick = (record) => {
-    console.log('Button clicked for record:', record);
+    navigate(`/begingame/${record.topicId}`);
   };
 
   // State lưu data topic
-  const TopicResult = useSelector(state => state.topic.topic);
+  const TopicResult = useSelector(state => state.topic.topics);
   // State lưu dữ liệu phân trang
-  const PagingResult = useSelector(state => state.topic.topic.paging);
+  const PagingResult = useSelector(state => state.topic.topics.paging);
   // State tổng số phần tử
   const [totalCount, setTotalCount] = useState(0);
   // State tổng hiển thị trên 1 trang, mặc định là 5

@@ -4,7 +4,8 @@ export const Topic = createSlice({
     initialState:{
         pending: false,
         error: false,
-        topic: {}
+        topic: null,
+        topics: {}
     },
     reducers:{
         TopicStart: (state) => {
@@ -15,9 +16,9 @@ export const Topic = createSlice({
             state.error = true;
         },
         SearchTopic:(state,action)=>{
-            state.topic = action.payload;
-        }
-
+            state.pending = false;
+            state.topics = action.payload;
+        },
     }
 });
 
