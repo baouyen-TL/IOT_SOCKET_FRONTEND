@@ -14,7 +14,7 @@ const HeaderPage = () => {
     label: "Tạo câu hỏi"
   },
   {
-    key: "/begingame",
+    key: "/list-topic",
     label: "Bắt đầu trò chơi"
   },
   {

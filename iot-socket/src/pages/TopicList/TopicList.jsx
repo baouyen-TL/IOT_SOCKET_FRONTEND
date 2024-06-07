@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { SearchTopicApi } from '../../redux/Topic/TopicApi';
 import { useDispatch, useSelector } from 'react-redux';
 
-const BeginGame = () => {
+const TopicList = () => {
 
   const [tableParams,setTableParams] = useState({
     paging:{
@@ -45,20 +45,31 @@ const BeginGame = () => {
       render: (_, record) => {
         return (
           <div className=" flex justify-evenly">
-            <Button>Bắt đầu</Button>
+            <Button onClick={() => handleButtonClick(record)}>Bắt đầu</Button>
           </div>
         );
       },
     },
   ];
+
+  const handleButtonClick = (record) => {
+    console.log('Button clicked for record:', record);
+  };
+
+  // State lưu data topic
   const TopicResult = useSelector(state => state.topic.topic);
+  // State lưu dữ liệu phân trang
   const PagingResult = useSelector(state => state.topic.topic.paging);
+  // State tổng số phần tử
   const [totalCount, setTotalCount] = useState(0);
+  // State tổng hiển thị trên 1 trang, mặc định là 5
   const [pageSize, setPageSize] = useState(5);
+  // State số trạng hiện tại, mặc định là 1
   const [currentPage, setCurrentPage] = useState(1);
 
   const dispatch = useDispatch();
 
+  // Mỗi khi chuyển trang thì gọi lại api searchTopic
   useEffect(() => {
     const functionSearchTopic = async () => {
       return await SearchTopicApi(tableParams, dispatch)
@@ -66,6 +77,7 @@ const BeginGame = () => {
     functionSearchTopic();
   }, [tableParams])
 
+  // Nếu dữ liệu phân trang thay đổi thì set lại tổng số trang , và số lượng phần tử hiễn thị trên 1 page
   useEffect(() => {
     if (PagingResult) {
       setTotalCount(PagingResult.totalCount);
@@ -73,6 +85,7 @@ const BeginGame = () => {
     }
   }, [PagingResult]);
 
+  // Khi nhấn nút đổi trang khác
   const handleTableChange = (e) => {
     setCurrentPage(e.defaultCurrent);
     setPageSize(e.pageSize);
@@ -126,4 +139,4 @@ const BeginGame = () => {
   )
 }
 
-export default BeginGame
+export default TopicList
