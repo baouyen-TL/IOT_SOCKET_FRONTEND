@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { CreateBeginGame, BeginGameStart, BeginGameError } from './TopicSlice';
+import { CreateBeginGame, BeginGameStart, BeginGameError } from './BeginGameSlice';
 
 
 export const createBeginGameApi = async(request, dispatch) => {
@@ -8,6 +8,7 @@ export const createBeginGameApi = async(request, dispatch) => {
     try{
         const res = await axios.post(`${PK}/begingame/create`, request);
         await dispatch(CreateBeginGame(res.data));
+        return res;
     }catch(err){
         await dispatch(BeginGameError());
     }

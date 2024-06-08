@@ -31,8 +31,8 @@ export const GetQuestionByTopicIdApi = async(topicId, dispatch) => {
     const PK = process.env.REACT_APP_API;
     await dispatch(QuestionStart());
     try{
-        const res = await axios.get(`${PK}/Question/list-question-by-topicId`, topicId);
-        await dispatch(getQuestionByTopicId(res.data));
+        const res = await axios.get(`${PK}/Question/list-question-by-topicId?TopicId=${topicId}`);
+        await dispatch(getQuestionByTopicId(res.data.data.listQuestionDatas));
     }catch(err){
         await dispatch(QuestionError());
     }

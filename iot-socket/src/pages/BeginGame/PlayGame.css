@@ -1,0 +1,46 @@
+.answers-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Tạo 2 cột với kích thước bằng nhau */
+    gap: 20px; /* Khoảng cách giữa các phần tử */
+    margin: 20px 0;
+    justify-items: center;
+  }
+  
+  .answer {
+    background: #fff; /* Màu nền cho từng ô, tùy chỉnh theo ý bạn */
+    border: 3px solid #504a40; /* Đường viền */
+    padding: 15px;
+    border-radius: 10px; /* Góc bo tròn */
+    text-align: left; /* Căn giữa nội dung */
+    width: 400px;
+  }
+  .answer.selected {
+    background-color: #51ef51; /* Màu nền khác biệt cho các phần tử được chọn */
+  }
+
+  .clock {
+    display: inline-block;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .clock-face {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .clock-seconds {
+    font-size: 24px;
+    line-height: 1.2;
+  }
+  
+  

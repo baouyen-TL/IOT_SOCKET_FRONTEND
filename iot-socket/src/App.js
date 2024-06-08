@@ -9,6 +9,7 @@ import ConnectRemote from "./pages/ConnectRemote/ConnectRemote";
 import Default from "./layout/Default/Default";
 import TopicList from "./pages/TopicList/TopicList";
 import BeginGame from "./pages/BeginGame/BeginGame";
+import PlayGame from "./pages/BeginGame/PlayGame";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/statistic" element = {<Statistic />} />
             <Route path="/list-topic" element = {<TopicList />} />
             <Route path="/begingame/:topicid" element = {<BeginGame />} />
+            <Route path="/playgame/:topicid/:beginGameId" element={<PlayGame/>}/>
             <Route path="/connect-remote" element = {<ConnectRemote />} />
           </Route>
         </Routes>

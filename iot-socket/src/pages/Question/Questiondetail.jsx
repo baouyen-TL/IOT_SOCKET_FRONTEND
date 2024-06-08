@@ -4,6 +4,7 @@ import { LoadingOutlined, UploadOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { createQuestionApi } from '../../redux/Question/QuestionApi';
 import { createTopicApi } from '../../redux/Topic/TopicApi';
+import { useNavigate } from 'react-router-dom';
 
 const ObjQuestion = {
   topicId:"",
@@ -15,6 +16,7 @@ const ObjQuestion = {
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 const Questiondetail = () => {
+  const navigate = useNavigate();
   const [rows, setRows] = useState([ObjQuestion]);
   const [loading, setLoading] = useState(false);
   const TopicName = useSelector((state) => state.global.topic);  
@@ -29,6 +31,9 @@ const Questiondetail = () => {
     setRows([...rows, { ...ObjQuestion }]);
     console.log(rows);
   };
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
   const HanldeSaveQuestion = async() =>{
     debugger;
     console.log(rows);
@@ -44,10 +49,16 @@ const Questiondetail = () => {
             rows.forEach((e)=>(
               e.topicId =  resultCreateTopic.data.data
             ));
-            const resultCreateQuestion = await createQuestionApi(rows,dispatch);
+            const objRequest = {
+              listQuestions:rows
+            }
+            const resultCreateQuestion = await createQuestionApi(objRequest,dispatch);
             if(resultCreateQuestion!=null && resultCreateQuestion.isSuccess === true)
               {
                 message.success("Tạo bộ câu hỏi thành công!");
+                await sleep(1000);
+                setRows([ObjQuestion]);
+                navigate(0);
               }
               else
               {
@@ -57,7 +68,8 @@ const Questiondetail = () => {
           else{
             message.error("Lỗi tạo chủ đề cho bộ câu hỏi, vui lòng kiểm tra lại!");
           }
-          setLoading(false)
+          setLoading(false);
+
       }
       else
       {

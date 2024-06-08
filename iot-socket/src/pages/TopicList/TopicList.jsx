@@ -115,26 +115,26 @@ const TopicList = () => {
         scroll={{
           x: 1500,
       }}
-      summary={() => (
-        <Table.Summary fixed={fixedTop ? 'top' : 'bottom'}>
-          <Table.Summary.Row>
-            <Table.Summary.Cell index={0} colSpan={2}>
-              <Switch
-                checkedChildren="Fixed Top"
-                unCheckedChildren="Fixed Top"
-                checked={fixedTop}
-                onChange={() => {
-                  setFixedTop(!fixedTop);
-                }}
-              />
-            </Table.Summary.Cell>
-          </Table.Summary.Row>
-        </Table.Summary>
-      )}
-      // antd site header height
-      sticky={{
-        offsetHeader: 64,
-      }}
+      // summary={() => (
+      //   <Table.Summary fixed={fixedTop ? 'top' : 'bottom'}>
+      //     <Table.Summary.Row>
+      //       <Table.Summary.Cell index={0} colSpan={2}>
+      //         <Switch
+      //           checkedChildren="Fixed Top"
+      //           unCheckedChildren="Fixed Top"
+      //           checked={fixedTop}
+      //           onChange={() => {
+      //             setFixedTop(!fixedTop);
+      //           }}
+      //         />
+      //       </Table.Summary.Cell>
+      //     </Table.Summary.Row>
+      //   </Table.Summary>
+      // )}
+      // // antd site header height
+      // sticky={{
+      //   offsetHeader: 64,
+      // }}
     />
       </div>
     </div>
