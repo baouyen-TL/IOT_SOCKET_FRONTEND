@@ -1,9 +1,38 @@
 import { Space, Switch, Table } from 'antd';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { GetListRemoteApi } from '../../redux/remote/remoteApi';
+import * as signalR from '@microsoft/signalr';
 
 const ConnectRemote = () => {
+
+  const [connection, setConnection] = useState(null);
+  useEffect(() => {
+      const newConnection = new signalR.HubConnectionBuilder()
+          .withUrl("http://103.20.102.57:8011/chathub") // Thay thế bằng URL của máy chủ SignalR
+          .withAutomaticReconnect()
+          .build();
+
+      setConnection(newConnection);
+  }, []);
+
+  useEffect(() => {
+      if (connection) {
+          connection.start()
+              .then(() => {
+                  console.log('Connected!');
+              })
+              .catch(error => {
+                  console.log('Connection failed: ', error);
+              });
+
+          // Đăng ký hàm xử lý khi nhận được tin nhắn từ máy chủ
+          connection.on("ReceiveMessage", (user, message) => {
+              console.log(user, message);
+              // Call Api
+          });
+      }
+  }, [connection]);
 
 const dispatch = useDispatch();
  useEffect (()=>{
@@ -53,6 +82,7 @@ const dispatch = useDispatch();
       },
     },
   ];
+
   return (
     <div className="w-full flex justify-center mt-11">
     <Table
