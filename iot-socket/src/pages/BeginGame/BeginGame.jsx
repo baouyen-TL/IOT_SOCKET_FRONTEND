@@ -43,7 +43,10 @@ const BeginGame = () => {
     }
     const handleCreateGame = async () => {
         debugger;
-        if (className === '' || listUser.length < lstRemotes.length) {
+        if(lstRemotes.length<=0)
+            message.error("Không tìm thấy thiết bị để bắt đầu trò chơi");
+
+        else if (className === '' || listUser.length < lstRemotes.length) {
             message.error("Vui lòng nhập đầy đủ thông tin!")
         }
         else {
