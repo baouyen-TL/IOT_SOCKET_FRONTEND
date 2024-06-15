@@ -56,18 +56,15 @@ const BeginGame = () => {
                 listUserNames: listUser
             }
             const result = await createBeginGameApi(objCreateGame, dispatch);
-            if(result.data.isSuccess)
-                {
-                    dispatch(SetTopic(topicid));
-                    navigate(`/playgame/${topicid}/${result.data.data}`);
-                }
-                else
-                {
-                    message.error("Lỗi nhập thông tin vui lòng kiểm tra lại!!!");
-                }
+            if (result.data.isSuccess) {
+                dispatch(SetTopic(topicid));
+                navigate(`/playgame/${topicid}/${result.data.data}`);
+            }
+            else {
+                message.error("Lỗi nhập thông tin vui lòng kiểm tra lại!!!");
+            }
         }
     }
-
     return (
         <div className='w-[100%] flex flex-col items-center justify-center min-h-screen'>
             <div className='flex items-center justify-center mb-4'>

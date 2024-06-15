@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 
 const TopicList = () => {
 
-  const [tableParams,setTableParams] = useState({
-    paging:{
+  const [tableParams, setTableParams] = useState({
+    paging: {
       pageSize: 5,
       pageIndex: 1,
       orderBy: "",
@@ -93,7 +93,7 @@ const TopicList = () => {
     setPageSize(e.pageSize);
     setTotalCount(e.total);
     setTableParams({
-      paging:{
+      paging: {
         pageIndex: e.current,
         pageSize: e.pageSize
       }
@@ -103,39 +103,39 @@ const TopicList = () => {
   return (
     <div>
       <div className="w-full flex justify-center mt-11">
-      <Table
-        columns={columns}
-        dataSource={TopicResult.data}
-        pagination={{
-          total: totalCount, // total number of items
-          pageSize: pageSize, // items per page
-          defaultCurrent: currentPage, // default initial page
-        }}
-        onChange = {(e) => handleTableChange(e)}
-        scroll={{
-          x: 1500,
-      }}
-      // summary={() => (
-      //   <Table.Summary fixed={fixedTop ? 'top' : 'bottom'}>
-      //     <Table.Summary.Row>
-      //       <Table.Summary.Cell index={0} colSpan={2}>
-      //         <Switch
-      //           checkedChildren="Fixed Top"
-      //           unCheckedChildren="Fixed Top"
-      //           checked={fixedTop}
-      //           onChange={() => {
-      //             setFixedTop(!fixedTop);
-      //           }}
-      //         />
-      //       </Table.Summary.Cell>
-      //     </Table.Summary.Row>
-      //   </Table.Summary>
-      // )}
-      // // antd site header height
-      // sticky={{
-      //   offsetHeader: 64,
-      // }}
-    />
+        <Table
+          columns={columns}
+          dataSource={TopicResult.data}
+          pagination={{
+            total: totalCount, // total number of items
+            pageSize: pageSize, // items per page
+            defaultCurrent: currentPage, // default initial page
+          }}
+          onChange={(e) => handleTableChange(e)}
+          scroll={{
+            x: 1500,
+          }}
+        // summary={() => (
+        //   <Table.Summary fixed={fixedTop ? 'top' : 'bottom'}>
+        //     <Table.Summary.Row>
+        //       <Table.Summary.Cell index={0} colSpan={2}>
+        //         <Switch
+        //           checkedChildren="Fixed Top"
+        //           unCheckedChildren="Fixed Top"
+        //           checked={fixedTop}
+        //           onChange={() => {
+        //             setFixedTop(!fixedTop);
+        //           }}
+        //         />
+        //       </Table.Summary.Cell>
+        //     </Table.Summary.Row>
+        //   </Table.Summary>
+        // )}
+        // // antd site header height
+        // sticky={{
+        //   offsetHeader: 64,
+        // }}
+        />
       </div>
     </div>
   )

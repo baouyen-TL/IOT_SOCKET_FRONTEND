@@ -92,6 +92,7 @@ const PlayGame = () => {
       intervalRef.current = setInterval(() => {
         setSeconds(prevSeconds => {
           const newSeconds = prevSeconds - 1;
+          
           if (newSeconds === 0) {
             clearInterval(intervalRef.current);
             setIsResultView(true);
@@ -107,6 +108,7 @@ const PlayGame = () => {
   };
 
   const hanldeCheckCorrectAnswer = () => {
+<<<<<<< Updated upstream
     questionCurent.listAnswerDatas.forEach((value, index) => {
       if (value.isCorrect) setSelectedAnswerIndex(index);
     });
@@ -150,6 +152,13 @@ const PlayGame = () => {
       });
     }
   }, [connection]);
+=======
+    questionCurent.listAnswerDatas.map((value,index) => {
+      if(value.isCorrect)
+        setSelectedAnswerIndex(index);
+    })
+  }
+>>>>>>> Stashed changes
   return (
     <div className='flex m-4'>
       <div className='flex-1'>
