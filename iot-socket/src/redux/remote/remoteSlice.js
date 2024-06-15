@@ -4,7 +4,9 @@ export const Remote = createSlice({
     initialState:{
         pending: false,
         error: false,
-        remote: []
+        remote: [],
+        remoteconnect:[],
+        disconnect:false
     },
     reducers:{
         RemoteStart: (state) => {
@@ -18,9 +20,15 @@ export const Remote = createSlice({
             state.pending = false;
             state.remote = action.payload
             state.error = false;
+        },
+        GetlistRemoteConnect:(state,action) =>{
+            state.remoteconnect = action.payload
+        },
+        DisconnectDevice :(state,action) =>{
+            state.disconnect = action.payload
         }
     }
 });
 
-export const {RemoteStart, RemoteError,GetlstRemote} = Remote.actions;
+export const {RemoteStart, RemoteError,GetlstRemote,GetlistRemoteConnect,DisconnectDevice} = Remote.actions;
 export default Remote.reducer;

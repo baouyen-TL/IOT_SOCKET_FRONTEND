@@ -1,10 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { GetQuestionByTopicIdApi } from '../../redux/Question/QuestionApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'antd';
-import { GetListRemoteApi } from '../../redux/remote/remoteApi';
-import './PlayGame.css'
+import { GetListRemoteApi, GetListRemoteConnectApi } from '../../redux/remote/remoteApi';
+import './PlayGame.css';
+import * as signalR from '@microsoft/signalr';
+import { SaveAnswerApi } from '../../redux/answer/AnswerApi';
 
 const PlayGame = () => {
   const { beginGameId, topicid } = useParams();
@@ -20,42 +22,73 @@ const PlayGame = () => {
     imageUrl: null,
     listAnswerDatas: []
   });
-  console.log(selectedAnswerIndex)
-  const lstRemotes = useSelector(state => state.remote.remote);
+  const [connection, setConnection] = useState(null);
+  const timeQuestionRef = useRef();
+  const questionCurentRef = useRef(questionCurent);
+  const [countAnswer, setCountAnswer] = useState(0);
+  const countAnswerRef = useRef(countAnswer);
+  useEffect(()=>{
+    countAnswerRef.current = countAnswer;
+  },[countAnswer])
+
+  useEffect(() => {
+    const newConnection = new signalR.HubConnectionBuilder()
+      .withUrl("http://103.20.102.57:8011/chathub")
+      .withAutomaticReconnect()
+      .build();
+    setConnection(newConnection);
+  }, []);
+
+  const lstRemotes = useSelector(state => state.remote.remoteconnect);
+  const lstRemotesRef = useRef(lstRemotes);
+  useEffect(()=>{
+    lstRemotesRef.current = lstRemotes
+  },[lstRemotes])
   const intervalRef = useRef(null);
   const dispatch = useDispatch();
+
   useEffect(() => {
     const GetLstQuestion = async () => {
       await GetQuestionByTopicIdApi(topicid, dispatch);
-      await GetListRemoteApi(dispatch);
-    }
+      await GetListRemoteConnectApi(dispatch);
+    };
     GetLstQuestion();
-  }, [topicid])
-  const lstQuestion = useSelector(state => state.question.questionByTopicId)
+  }, [topicid, dispatch]);
+
+  const lstQuestion = useSelector(state => state.question.questionByTopicId);
+
   useEffect(() => {
     if (lstQuestion.length > 0) {
       setQuestonCurent(lstQuestion[questionIndex]);
       setSeconds(lstQuestion[questionIndex].questionTime);
     }
-  }, [lstQuestion, questionIndex])
+  }, [lstQuestion, questionIndex]);
+
+  useEffect(() => {
+    questionCurentRef.current = questionCurent;
+  }, [questionCurent]);
 
   const handleNextRequest = () => {
     setSelectedAnswerIndex(null);
     setIsShowButtonBeginCount(true);
     clearInterval(intervalRef.current);
     setIsResultView(false);
+    setCountAnswer(0);
     const nextQuestion = questionIndex + 1;
-    setQuestionIndex(questionIndex + 1);
+    setQuestionIndex(nextQuestion);
     if (nextQuestion === lstQuestion.length - 1) {
       setIsEndGame(true);
     }
-  }
+  };
 
-  const handleEndGame = () => {
-  }
+  const handleEndGame = () => {};
+
   const startTimer = () => {
     setIsShowButtonBeginCount(false);
     if (seconds > 0) {
+      const datetime = new Date();
+      datetime.setSeconds(datetime.getSeconds() + lstQuestion[questionIndex].questionTime);
+      timeQuestionRef.current = datetime;
       intervalRef.current = setInterval(() => {
         setSeconds(prevSeconds => {
           const newSeconds = prevSeconds - 1;
@@ -67,18 +100,56 @@ const PlayGame = () => {
         });
       }, 1000);
     }
-  }
+  };
 
   const handleSoonEndGame = () => {
     setIsResultView(true);
-  }
+  };
+
   const hanldeCheckCorrectAnswer = () => {
-    debugger
-    questionCurent.listAnswerDatas.map((value,index) => {
-      if(value.isCorrect)
-        setSelectedAnswerIndex(index);
-    })
-  }
+    questionCurent.listAnswerDatas.forEach((value, index) => {
+      if (value.isCorrect) setSelectedAnswerIndex(index);
+    });
+  };
+
+  useEffect(() => {
+    if (connection) {
+      connection.start()
+        .then(() => {
+          console.log('Connected!');
+        })
+        .catch(error => {
+          console.log('Connection failed: ', error);
+        });
+
+      connection.on("ChooseAnswer", (user, message, time) => {
+        debugger;
+        const validatedRemote = lstRemotesRef.current.find(x=>x.remoteId.toUpperCase() === user.toUpperCase());
+        if(validatedRemote !== undefined)
+          {
+            var dateChosseAnswer = new Date(time);
+            var dateAnswer = new Date(timeQuestionRef.current);
+            var differenceInMilliseconds = dateAnswer - dateChosseAnswer;
+            var differenceInSeconds = Math.round(differenceInMilliseconds / 1000);
+    
+            const answerchossed = questionCurentRef.current.listAnswerDatas.find(x => x.answerKey === message);
+            const objsaveAnswer = {
+              beginGameId: beginGameId,
+              answerId: answerchossed ? answerchossed.answerId : null,
+              questionId: questionCurentRef.current.questionId,
+              remoteId: user,
+              questionTime: questionCurentRef.current.questionTime,
+              countTime: differenceInSeconds
+            };
+            const saveAnswerToDb = async () => {
+              await SaveAnswerApi(objsaveAnswer);
+              setCountAnswer( countAnswerRef.current + 1);
+            };
+            saveAnswerToDb();
+          }
+      });
+    }
+  }, [connection]);
   return (
     <div className='flex m-4'>
       <div className='flex-1'>
@@ -108,7 +179,7 @@ const PlayGame = () => {
           isResultView === false ? (
             <div>
               <div>
-                <div className='m-[10px]'>Đã chọn: 0/{lstRemotes.length.toString()}</div>
+                <div className='m-[10px]'>Đã chọn: {countAnswer}/{lstRemotes.length.toString()}</div>
               </div>
               <div>
                 <div className='clock'>

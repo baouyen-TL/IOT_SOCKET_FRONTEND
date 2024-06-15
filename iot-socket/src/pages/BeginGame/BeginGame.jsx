@@ -1,7 +1,7 @@
 import { Button, Input, message } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { GetListRemoteApi } from '../../redux/remote/remoteApi';
+import { GetListRemoteConnectApi } from '../../redux/remote/remoteApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBeginGameApi } from '../../redux/BeginGame/BeginGameApi';
 import { SetTopic } from '../../redux/Global/GlobalSlice';
@@ -17,13 +17,13 @@ const BeginGame = () => {
     // Gọi api list remote đang connected
     useEffect(() => {
         const getListRemoteConnectedApi = async () => {
-            await GetListRemoteApi(dispatch);
+            await GetListRemoteConnectApi(dispatch);
         };
         getListRemoteConnectedApi();
     }, []);
 
     // Lấy ra list data Remote đang connected
-    const lstRemotes = useSelector(state => state.remote.remote);
+    const lstRemotes = useSelector(state => state.remote.remoteconnect);
 
     // State lưu thông tin BeginGame để tạo
     const [className, setClassName] = useState("");
