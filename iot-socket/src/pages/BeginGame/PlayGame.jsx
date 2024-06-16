@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { GetQuestionByTopicIdApi } from '../../redux/Question/QuestionApi';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from 'antd';
-import { GetListRemoteApi, GetListRemoteConnectApi } from '../../redux/remote/remoteApi';
+import { Button,message,Modal } from 'antd';
+import { GetListRemoteConnectApi, initialRemoteApi } from '../../redux/remote/remoteApi';
 import './PlayGame.css';
 import * as signalR from '@microsoft/signalr';
 import { SaveAnswerApi } from '../../redux/answer/AnswerApi';
+import BarChart from '../../Components/BarChart';
+import { GetQuestionResultApi } from '../../redux/report/ReportApi';
 
 const PlayGame = () => {
   const { beginGameId, topicid } = useParams();
@@ -16,6 +18,7 @@ const PlayGame = () => {
   const [isResultView, setIsResultView] = useState(false);
   const [isShowButtonBeginCount, setIsShowButtonBeginCount] = useState(true);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
+  const [datachartQuestion,setDataChartQuestion] = useState([]);
   const [questionCurent, setQuestonCurent] = useState({
     questionTime: 0,
     questionName: "",
@@ -27,6 +30,7 @@ const PlayGame = () => {
   const questionCurentRef = useRef(questionCurent);
   const [countAnswer, setCountAnswer] = useState(0);
   const countAnswerRef = useRef(countAnswer);
+  const navigate = useNavigate();
   useEffect(()=>{
     countAnswerRef.current = countAnswer;
   },[countAnswer])
@@ -41,6 +45,7 @@ const PlayGame = () => {
 
   const lstRemotes = useSelector(state => state.remote.remoteconnect);
   const lstRemotesRef = useRef(lstRemotes);
+  const [ishowChart, setIsShowChart] = useState(false);
   useEffect(()=>{
     lstRemotesRef.current = lstRemotes
   },[lstRemotes])
@@ -57,6 +62,30 @@ const PlayGame = () => {
 
   const lstQuestion = useSelector(state => state.question.questionByTopicId);
 
+  const reportQuestionId = useSelector((state)=>state.report.questionResult)
+  useEffect(()=>{
+    var countChosseAnswer = 0;
+    var dataShow = []
+    reportQuestionId.forEach(element => {
+      countChosseAnswer+=element.totalUserSelected;
+      dataShow.push(
+        {
+          label: element.answerKey,
+          value: element.totalUserSelected
+        }
+      )
+    });
+    if(lstRemotesRef.current.length>countChosseAnswer)
+      {
+        dataShow.push(
+          {
+            label:'Không chọn',
+            value:lstRemotesRef.current.length - countChosseAnswer
+          }
+        )
+      }
+      setDataChartQuestion(dataShow)
+  },[reportQuestionId])
   useEffect(() => {
     if (lstQuestion.length > 0) {
       setQuestonCurent(lstQuestion[questionIndex]);
@@ -68,20 +97,34 @@ const PlayGame = () => {
     questionCurentRef.current = questionCurent;
   }, [questionCurent]);
 
-  const handleNextRequest = () => {
-    setSelectedAnswerIndex(null);
-    setIsShowButtonBeginCount(true);
-    clearInterval(intervalRef.current);
-    setIsResultView(false);
-    setCountAnswer(0);
-    const nextQuestion = questionIndex + 1;
-    setQuestionIndex(nextQuestion);
-    if (nextQuestion === lstQuestion.length - 1) {
-      setIsEndGame(true);
-    }
+  const handleNextRequest = async () => {
+    const initialRemote = await initialRemoteApi();
+    if(initialRemote === false)
+      {
+        message.error("Lỗi reset remote vui lòng thử lại !!!")
+      }
+      else
+      {
+        setSelectedAnswerIndex(null);
+        setIsShowButtonBeginCount(true);
+        clearInterval(intervalRef.current);
+        setIsResultView(false);
+        setCountAnswer(0);
+        const nextQuestion = questionIndex + 1;
+        setQuestionIndex(nextQuestion);
+        if (nextQuestion === lstQuestion.length - 1) {
+          setIsEndGame(true);
+        }
+      }
   };
 
-  const handleEndGame = () => {};
+  const handleCancel = () => {
+    setIsShowChart(false);
+}
+
+  const handleEndGame = () => {
+    navigate(`/ranking/${beginGameId}`);
+  };
 
   const startTimer = () => {
     setIsShowButtonBeginCount(false);
@@ -92,7 +135,6 @@ const PlayGame = () => {
       intervalRef.current = setInterval(() => {
         setSeconds(prevSeconds => {
           const newSeconds = prevSeconds - 1;
-          
           if (newSeconds === 0) {
             clearInterval(intervalRef.current);
             setIsResultView(true);
@@ -108,7 +150,6 @@ const PlayGame = () => {
   };
 
   const hanldeCheckCorrectAnswer = () => {
-<<<<<<< Updated upstream
     questionCurent.listAnswerDatas.forEach((value, index) => {
       if (value.isCorrect) setSelectedAnswerIndex(index);
     });
@@ -125,7 +166,6 @@ const PlayGame = () => {
         });
 
       connection.on("ChooseAnswer", (user, message, time) => {
-        debugger;
         const validatedRemote = lstRemotesRef.current.find(x=>x.remoteId.toUpperCase() === user.toUpperCase());
         if(validatedRemote !== undefined)
           {
@@ -152,13 +192,13 @@ const PlayGame = () => {
       });
     }
   }, [connection]);
-=======
-    questionCurent.listAnswerDatas.map((value,index) => {
-      if(value.isCorrect)
-        setSelectedAnswerIndex(index);
-    })
+  const handleViewResult = async () =>{
+    const resultView = await GetQuestionResultApi(beginGameId,questionCurentRef.current.questionId,dispatch);
+    if(resultView!=null)
+      setIsShowChart(true);
+    else
+      message.error("Lỗi lấy dữ liệu kết quả vui lòng thử lại!!!")
   }
->>>>>>> Stashed changes
   return (
     <div className='flex m-4'>
       <div className='flex-1'>
@@ -209,7 +249,7 @@ const PlayGame = () => {
                 <Button onClick={hanldeCheckCorrectAnswer} className='w-[100%]'>Đáp án chính xác</Button>
               </div>
               <div className='w-[100%] mb-[10px]'>
-                <Button className='w-[100%]'>Xem kết quả</Button>
+                <Button className='w-[100%]' onClick={handleViewResult}>Xem kết quả</Button>
               </div>
               {
                 isEndGame === false ? (
@@ -222,7 +262,18 @@ const PlayGame = () => {
           )
         }
       </div>
-
+      {
+                ishowChart && (
+                    <Modal
+                    width={800}
+                    height={1000}
+                        visible={ishowChart}
+                        onCancel={handleCancel}
+                        footer={[<div className="hidden"></div>]}>
+                        <BarChart data={datachartQuestion}/>
+                    </Modal>
+                )
+            }
     </div>
   )
 }

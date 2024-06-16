@@ -38,3 +38,15 @@ export const DisconnectApi = async(dispatch) => {
         return false;
     }
 }
+export const initialRemoteApi = async () =>{
+    const PK = process.env.REACT_APP_API;
+    try
+    {
+        const res = await axios.post(`${PK}/Remote/initial-remote`);
+        return res.data.data;
+    }
+    catch(error)
+    {
+        return false
+    }
+}

@@ -10,6 +10,7 @@ import Default from "./layout/Default/Default";
 import TopicList from "./pages/TopicList/TopicList";
 import BeginGame from "./pages/BeginGame/BeginGame";
 import PlayGame from "./pages/BeginGame/PlayGame";
+import Ranking from "./pages/Ranking/Ranking";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/begingame/:topicid" element = {<BeginGame />} />
             <Route path="/playgame/:topicid/:beginGameId" element={<PlayGame/>}/>
             <Route path="/connect-remote" element = {<ConnectRemote />} />
+            <Route path="/ranking/:beginGameId" element ={<Ranking/>}/>
           </Route>
         </Routes>
       </Router>

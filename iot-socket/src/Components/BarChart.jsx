@@ -6,7 +6,6 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend,ChartDataLabels);
 
 const BarChart = ({ data }) => {
-    debugger;
     const chartData = {
         labels: data.map(item => item.label),
         datasets: [
