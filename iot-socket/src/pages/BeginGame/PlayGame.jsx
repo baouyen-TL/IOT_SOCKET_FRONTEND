@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { GetQuestionByTopicIdApi } from '../../redux/Question/QuestionApi';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button,message,Modal } from 'antd';
+import { Button, message, Modal } from 'antd';
 import { GetListRemoteConnectApi, initialRemoteApi } from '../../redux/remote/remoteApi';
 import './PlayGame.css';
 import * as signalR from '@microsoft/signalr';
@@ -18,7 +18,7 @@ const PlayGame = () => {
   const [isResultView, setIsResultView] = useState(false);
   const [isShowButtonBeginCount, setIsShowButtonBeginCount] = useState(true);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
-  const [datachartQuestion,setDataChartQuestion] = useState([]);
+  const [datachartQuestion, setDataChartQuestion] = useState([]);
   const [questionCurent, setQuestonCurent] = useState({
     questionTime: 0,
     questionName: "",
@@ -31,9 +31,9 @@ const PlayGame = () => {
   const [countAnswer, setCountAnswer] = useState(0);
   const countAnswerRef = useRef(countAnswer);
   const navigate = useNavigate();
-  useEffect(()=>{
+  useEffect(() => {
     countAnswerRef.current = countAnswer;
-  },[countAnswer])
+  }, [countAnswer])
 
   useEffect(() => {
     const newConnection = new signalR.HubConnectionBuilder()
@@ -46,9 +46,9 @@ const PlayGame = () => {
   const lstRemotes = useSelector(state => state.remote.remoteconnect);
   const lstRemotesRef = useRef(lstRemotes);
   const [ishowChart, setIsShowChart] = useState(false);
-  useEffect(()=>{
+  useEffect(() => {
     lstRemotesRef.current = lstRemotes
-  },[lstRemotes])
+  }, [lstRemotes])
   const intervalRef = useRef(null);
   const dispatch = useDispatch();
 
@@ -62,12 +62,12 @@ const PlayGame = () => {
 
   const lstQuestion = useSelector(state => state.question.questionByTopicId);
 
-  const reportQuestionId = useSelector((state)=>state.report.questionResult)
-  useEffect(()=>{
+  const reportQuestionId = useSelector((state) => state.report.questionResult)
+  useEffect(() => {
     var countChosseAnswer = 0;
     var dataShow = []
     reportQuestionId.forEach(element => {
-      countChosseAnswer+=element.totalUserSelected;
+      countChosseAnswer += element.totalUserSelected;
       dataShow.push(
         {
           label: element.answerKey,
@@ -75,17 +75,16 @@ const PlayGame = () => {
         }
       )
     });
-    if(lstRemotesRef.current.length>countChosseAnswer)
-      {
-        dataShow.push(
-          {
-            label:'Không chọn',
-            value:lstRemotesRef.current.length - countChosseAnswer
-          }
-        )
-      }
-      setDataChartQuestion(dataShow)
-  },[reportQuestionId])
+    if (lstRemotesRef.current.length > countChosseAnswer) {
+      dataShow.push(
+        {
+          label: 'Không chọn',
+          value: lstRemotesRef.current.length - countChosseAnswer
+        }
+      )
+    }
+    setDataChartQuestion(dataShow)
+  }, [reportQuestionId])
   useEffect(() => {
     if (lstQuestion.length > 0) {
       setQuestonCurent(lstQuestion[questionIndex]);
@@ -99,28 +98,26 @@ const PlayGame = () => {
 
   const handleNextRequest = async () => {
     const initialRemote = await initialRemoteApi();
-    if(initialRemote === false)
-      {
-        message.error("Lỗi reset remote vui lòng thử lại !!!")
+    if (initialRemote === false) {
+      message.error("Lỗi reset remote vui lòng thử lại !!!")
+    }
+    else {
+      setSelectedAnswerIndex(null);
+      setIsShowButtonBeginCount(true);
+      clearInterval(intervalRef.current);
+      setIsResultView(false);
+      setCountAnswer(0);
+      const nextQuestion = questionIndex + 1;
+      setQuestionIndex(nextQuestion);
+      if (nextQuestion === lstQuestion.length - 1) {
+        setIsEndGame(true);
       }
-      else
-      {
-        setSelectedAnswerIndex(null);
-        setIsShowButtonBeginCount(true);
-        clearInterval(intervalRef.current);
-        setIsResultView(false);
-        setCountAnswer(0);
-        const nextQuestion = questionIndex + 1;
-        setQuestionIndex(nextQuestion);
-        if (nextQuestion === lstQuestion.length - 1) {
-          setIsEndGame(true);
-        }
-      }
+    }
   };
 
   const handleCancel = () => {
     setIsShowChart(false);
-}
+  }
 
   const handleEndGame = () => {
     navigate(`/ranking/${beginGameId}`);
@@ -166,35 +163,34 @@ const PlayGame = () => {
         });
 
       connection.on("ChooseAnswer", (user, message, time) => {
-        const validatedRemote = lstRemotesRef.current.find(x=>x.remoteId.toUpperCase() === user.toUpperCase());
-        if(validatedRemote !== undefined)
-          {
-            var dateChosseAnswer = new Date(time);
-            var dateAnswer = new Date(timeQuestionRef.current);
-            var differenceInMilliseconds = dateAnswer - dateChosseAnswer;
-            var differenceInSeconds = Math.round(differenceInMilliseconds / 1000);
-    
-            const answerchossed = questionCurentRef.current.listAnswerDatas.find(x => x.answerKey === message);
-            const objsaveAnswer = {
-              beginGameId: beginGameId,
-              answerId: answerchossed ? answerchossed.answerId : null,
-              questionId: questionCurentRef.current.questionId,
-              remoteId: user,
-              questionTime: questionCurentRef.current.questionTime,
-              countTime: differenceInSeconds
-            };
-            const saveAnswerToDb = async () => {
-              await SaveAnswerApi(objsaveAnswer);
-              setCountAnswer( countAnswerRef.current + 1);
-            };
-            saveAnswerToDb();
-          }
+        const validatedRemote = lstRemotesRef.current.find(x => x.remoteId.toUpperCase() === user.toUpperCase());
+        if (validatedRemote !== undefined) {
+          var dateChosseAnswer = new Date(time);
+          var dateAnswer = new Date(timeQuestionRef.current);
+          var differenceInMilliseconds = dateAnswer - dateChosseAnswer;
+          var differenceInSeconds = Math.round(differenceInMilliseconds / 1000);
+
+          const answerchossed = questionCurentRef.current.listAnswerDatas.find(x => x.answerKey === message);
+          const objsaveAnswer = {
+            beginGameId: beginGameId,
+            answerId: answerchossed ? answerchossed.answerId : null,
+            questionId: questionCurentRef.current.questionId,
+            remoteId: user,
+            questionTime: questionCurentRef.current.questionTime,
+            countTime: differenceInSeconds
+          };
+          const saveAnswerToDb = async () => {
+            await SaveAnswerApi(objsaveAnswer);
+            setCountAnswer(countAnswerRef.current + 1);
+          };
+          saveAnswerToDb();
+        }
       });
     }
   }, [connection]);
-  const handleViewResult = async () =>{
-    const resultView = await GetQuestionResultApi(beginGameId,questionCurentRef.current.questionId,dispatch);
-    if(resultView!=null)
+  const handleViewResult = async () => {
+    const resultView = await GetQuestionResultApi(beginGameId, questionCurentRef.current.questionId, dispatch);
+    if (resultView != null)
       setIsShowChart(true);
     else
       message.error("Lỗi lấy dữ liệu kết quả vui lòng thử lại!!!")
@@ -263,17 +259,17 @@ const PlayGame = () => {
         }
       </div>
       {
-                ishowChart && (
-                    <Modal
-                    width={800}
-                    height={1000}
-                        visible={ishowChart}
-                        onCancel={handleCancel}
-                        footer={[<div className="hidden"></div>]}>
-                        <BarChart data={datachartQuestion}/>
-                    </Modal>
-                )
-            }
+        ishowChart && (
+          <Modal
+            width={800}
+            height={1000}
+            visible={ishowChart}
+            onCancel={handleCancel}
+            footer={[<div className="hidden"></div>]}>
+            <BarChart data={datachartQuestion} />
+          </Modal>
+        )
+      }
     </div>
   )
 }

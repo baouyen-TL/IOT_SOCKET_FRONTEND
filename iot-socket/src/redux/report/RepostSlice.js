@@ -5,7 +5,9 @@ export const Report = createSlice({
         pending: false,
         error: false,
         questionResult: [],
-        rankingResult:[]
+        rankingResult:[],
+        detailTopRanking:[],
+        statistic:[]
     },
     reducers:{
         QuestionResultStart: (state) => {
@@ -25,8 +27,14 @@ export const Report = createSlice({
             state.rankingResult = action.payload
             state.error = false;
         },
+        getDetailTopRanking:(state,action) =>{
+            state.detailTopRanking = action.payload
+        },
+        searchStatistic:(state,action) =>{
+            state.statistic = action.payload
+        }
     }
 });
 
-export const {QuestionResultStart, QuestionResultError, getQuestionResultId,getRankingtId} = Report.actions;
+export const {QuestionResultStart, QuestionResultError, getQuestionResultId,getRankingtId,getDetailTopRanking,searchStatistic} = Report.actions;
 export default Report.reducer;

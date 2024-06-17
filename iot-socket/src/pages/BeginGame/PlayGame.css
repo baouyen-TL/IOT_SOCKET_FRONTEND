@@ -14,6 +14,24 @@
     text-align: left; /* Căn giữa nội dung */
     width: 400px;
   }
+
+
+  .device-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Tạo 2 cột với kích thước bằng nhau */
+    gap: 20px; /* Khoảng cách giữa các phần tử */
+    margin: 20px 0;
+    justify-items: center;
+  }
+  
+  .device {
+    background: #fff; /* Màu nền cho từng ô, tùy chỉnh theo ý bạn */
+    border: 3px solid #56e0f5; /* Đường viền */
+    padding: 15px;
+    border-radius: 10px; /* Góc bo tròn */
+    text-align: left; /* Căn giữa nội dung */
+    width: 400px;
+  }
   .answer.selected {
     background-color: #51ef51; /* Màu nền khác biệt cho các phần tử được chọn */
   }

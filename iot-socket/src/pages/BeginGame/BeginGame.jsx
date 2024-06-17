@@ -5,6 +5,7 @@ import { GetListRemoteConnectApi } from '../../redux/remote/remoteApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBeginGameApi } from '../../redux/BeginGame/BeginGameApi';
 import { SetTopic } from '../../redux/Global/GlobalSlice';
+import "./PlayGame.css"
 
 
 const BeginGame = () => {
@@ -66,20 +67,20 @@ const BeginGame = () => {
         }
     }
     return (
-        <div className='w-[100%] flex flex-col items-center justify-center min-h-screen'>
-            <div className='flex items-center justify-center mb-4'>
-                <label>Nhập lớp:</label>
+        <div className='w-[100%] flex flex-col items-center justify-center'>
+            <div className='flex items-center justify-center mt-[100px] mb-[100px]'>
+                <label className='font-semibold text-lg'>Tên lớp:</label>
                 <Input
                     name="className"
-                    placeholder="Nhập lớp" className='w-[200px] rounded-[5px] ml-4'
+                    placeholder="Nhập lớp" className='w-[500px] rounded-[5px] ml-4'
                     onChange={(e) => setClassName(e.target.value)}
                 />
             </div>
             {/* Các hàng khác */}
-            <div className='flex flex-wrap items-center justify-center mb-4'>
+            <div className='device-grid'>
                 {
                     lstRemotes.map((item, index) => (
-                        <div key={item.remoteId} className='flex w-[50%] justify-center items-center'>
+                        <div key={item.remoteId} className='device'>
                             <label>{item.remoteName}</label>
                             <Input
                                 placeholder="Tên học sinh" className='w-[80%] rounded-[5px] m-2'

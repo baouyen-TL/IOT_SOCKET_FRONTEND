@@ -26,3 +26,28 @@ export const SearchTopicApi = async (objRequest,dispatch) =>{
         await dispatch(TopicError());
     }
 }
+
+export const DeleteTopicApi = async (topicId) =>{
+    const PK = process.env.REACT_APP_API;
+    try{
+        const response = await axios.post(`${PK}/Topic/delete`,topicId);
+        return response.data.data;
+    }
+    catch(error)
+    {
+        return false;
+    }
+}
+
+export const DeleteTopicAndBeginGameIdApi = async (begingameId,topicId) =>{
+    const PK = process.env.REACT_APP_API;
+    try{
+        const response = await axios.post(`${PK}/Report/delete`,topicId);
+        return response.data.data;
+    }
+    catch(error)
+    {
+        return false;
+    }
+}
+

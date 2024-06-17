@@ -10,7 +10,7 @@ const ConnectRemote = () => {
   const [disconnectDevice, setDisconnectDevice] = useState(false);
   useEffect(() => {
     const newConnection = new signalR.HubConnectionBuilder()
-      .withUrl("http://103.20.102.57:8011/chathub") // Thay thế bằng URL của máy chủ SignalR
+      .withUrl("https://localhost:44345/chathub") // Thay thế bằng URL của máy chủ SignalR
       .withAutomaticReconnect()
       .build();
 

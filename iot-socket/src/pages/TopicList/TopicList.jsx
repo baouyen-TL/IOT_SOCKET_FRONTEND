@@ -1,8 +1,9 @@
-import { Button, Pagination, Table, Switch } from 'antd';
+import { Button, Pagination, Table, Switch, message } from 'antd';
 import React, { useEffect, useState } from 'react'
-import { SearchTopicApi } from '../../redux/Topic/TopicApi';
+import { DeleteTopicApi, SearchTopicApi } from '../../redux/Topic/TopicApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
 
 const TopicList = () => {
 
@@ -26,7 +27,7 @@ const TopicList = () => {
       title: "Số lượng câu hỏi",
       dataIndex: "countQuestion",
       key: "countQuestion",
-      width: 150,
+      width: 50,
       align: "center",
     },
     {
@@ -35,18 +36,20 @@ const TopicList = () => {
       key: "createTime",
       width: 150,
       align: "center",
+      render: (text) => format(new Date(text), 'dd-MM-yyyy HH:mm:ss')
     },
     {
       title: "Thao tác",
       key: "action",
       dataIndex: "action",
-      width: 200,
+      width: 100,
       fixed: "right",
       align: "center",
       render: (_, record) => {
         return (
           <div className=" flex justify-evenly">
             <Button onClick={() => handleButtonClick(record)}>Bắt đầu</Button>
+            <Button onClick={()=>handleDeleteTopic(record)}>Xóa</Button>
           </div>
         );
       },
@@ -57,6 +60,13 @@ const TopicList = () => {
   const handleButtonClick = (record) => {
     navigate(`/begingame/${record.topicId}`);
   };
+  const handleDeleteTopic = async (record) =>{
+    const result = await DeleteTopicApi(record.topicId);
+    if(result)
+      message.success("Xóa chủ đề thành công");
+    else
+      message.error("Xóa chủ đề thất bại vui lòng thử lại sau !!!!");
+  }
 
   // State lưu data topic
   const TopicResult = useSelector(state => state.topic.topics);
@@ -99,7 +109,6 @@ const TopicList = () => {
       }
     })
   };
-  const [fixedTop, setFixedTop] = useState(false);
   return (
     <div>
       <div className="w-full flex justify-center mt-11">
@@ -115,26 +124,6 @@ const TopicList = () => {
           scroll={{
             x: 1500,
           }}
-        // summary={() => (
-        //   <Table.Summary fixed={fixedTop ? 'top' : 'bottom'}>
-        //     <Table.Summary.Row>
-        //       <Table.Summary.Cell index={0} colSpan={2}>
-        //         <Switch
-        //           checkedChildren="Fixed Top"
-        //           unCheckedChildren="Fixed Top"
-        //           checked={fixedTop}
-        //           onChange={() => {
-        //             setFixedTop(!fixedTop);
-        //           }}
-        //         />
-        //       </Table.Summary.Cell>
-        //     </Table.Summary.Row>
-        //   </Table.Summary>
-        // )}
-        // // antd site header height
-        // sticky={{
-        //   offsetHeader: 64,
-        // }}
         />
       </div>
     </div>
