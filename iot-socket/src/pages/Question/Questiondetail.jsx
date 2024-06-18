@@ -1,6 +1,6 @@
 import { Button, Form, Input, message, Radio, Space, Spin, Upload } from 'antd';
-import React, { useState } from 'react'
-import { LoadingOutlined, UploadOutlined } from '@ant-design/icons';
+import React, { useState } from 'react';
+import { LoadingOutlined, UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { createQuestionApi } from '../../redux/Question/QuestionApi';
 import { createTopicApi } from '../../redux/Topic/TopicApi';
@@ -15,62 +15,56 @@ const ObjQuestion = {
 };
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+
 const Questiondetail = () => {
   const navigate = useNavigate();
   const [rows, setRows] = useState([ObjQuestion]);
   const [loading, setLoading] = useState(false);
   const TopicName = useSelector((state) => state.global.topic);
-  const Answer = [
-    "A",
-    "B",
-    "C",
-    "D"
-  ];
+  const Answer = ["A", "B", "C", "D"];
   const dispatch = useDispatch();
+
   const handleAddRow = () => {
     setRows([...rows, { ...ObjQuestion }]);
-    console.log(rows);
   };
+
+  const handleDeleteRow = (rowIndex) => {
+    setRows(rows.filter((_, index) => index !== rowIndex));
+  };
+
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+
   const HanldeSaveQuestion = async () => {
-    debugger;
-    console.log(rows);
     if (rows.length > 0 && rows[0].listAnswers.length > 0) {
       setLoading(true);
       const topicReq = {
         topicName: TopicName
-      }
+      };
       const resultCreateTopic = await createTopicApi(topicReq, dispatch);
       if (resultCreateTopic != null && resultCreateTopic.data.isSuccess === true) {
-        rows.forEach((e) => (
-          e.topicId = resultCreateTopic.data.data
-        ));
+        rows.forEach((e) => (e.topicId = resultCreateTopic.data.data));
         const objRequest = {
           listQuestions: rows
-        }
+        };
         const resultCreateQuestion = await createQuestionApi(objRequest, dispatch);
         if (resultCreateQuestion != null && resultCreateQuestion.isSuccess === true) {
           message.success("Tạo bộ câu hỏi thành công!");
           await sleep(1000);
           setRows([ObjQuestion]);
           navigate(0);
-        }
-        else {
+        } else {
           message.error("Tạo bộ câu hỏi thất bại!");
         }
-      }
-      else {
+      } else {
         message.error("Lỗi tạo chủ đề cho bộ câu hỏi, vui lòng kiểm tra lại!");
       }
       setLoading(false);
-
+    } else {
+      message.error("Vui lòng nhập thông tin!");
     }
-    else {
-      message.error("Vui lòng nhập thông tin!")
-    }
-  }
+  };
 
   const getBase64 = (file, callback) => {
     const reader = new FileReader();
@@ -93,7 +87,7 @@ const Questiondetail = () => {
     return false;
   };
 
-  const handleAswer = (rowIndex, key, value) => {
+  const handleAnswer = (rowIndex, key, value) => {
     const updatedRows = rows.map((row, index) => {
       if (index === rowIndex) {
         const updatedAnswers = row.listAnswers.map(answer => {
@@ -113,8 +107,8 @@ const Questiondetail = () => {
     });
     setRows(updatedRows);
   };
+
   const onChange = (rowIndex, key) => {
-    debugger;
     const updatedRows = rows.map((row, index) => {
       if (index === rowIndex) {
         const updatedAnswers = row.listAnswers.map(answer => {
@@ -134,7 +128,8 @@ const Questiondetail = () => {
     });
     setRows(updatedRows);
   };
-  const handleQueston = (rowIndex, value) => {
+
+  const handleQuestion = (rowIndex, value) => {
     const updatedRows = rows.map((row, index) => {
       if (index === rowIndex) {
         return { ...row, questionName: value };
@@ -142,7 +137,8 @@ const Questiondetail = () => {
       return row;
     });
     setRows(updatedRows);
-  }
+  };
+
   const handleTime = (rowIndex, value) => {
     const updatedRows = rows.map((row, index) => {
       if (index === rowIndex) {
@@ -151,7 +147,8 @@ const Questiondetail = () => {
       return row;
     });
     setRows(updatedRows);
-  }
+  };
+
   return (
     <div>
       <Spin spinning={loading} indicator={antIcon}>
@@ -171,7 +168,8 @@ const Questiondetail = () => {
                       style={{ width: '800px', fontSize: '1rem', fontWeight: '500' }}
                       autoSize={{ minRows: 1, maxRows: 10 }}
                       value={row.questionName}
-                      onChange={(e) => handleQueston(rowIndex, e.target.value)}></Input.TextArea>
+                      onChange={(e) => handleQuestion(rowIndex, e.target.value)}
+                    />
                     <div className='ml-5'>
                       <Upload
                         style={{ display: 'flex' }}
@@ -183,6 +181,15 @@ const Questiondetail = () => {
                         <Button icon={<UploadOutlined />}>Click to Upload</Button>
                       </Upload>
                     </div>
+                    {/* Delete Button */}
+                    <Button
+                      type="danger"
+                      icon={<DeleteOutlined />}
+                      onClick={() => handleDeleteRow(rowIndex)}
+                      style={{ marginLeft: '10px' }}
+                    >
+                      Delete
+                    </Button>
                   </div>
                 </div>
                 <div className='flex w-[100%] items-center mb-10'>
@@ -191,33 +198,35 @@ const Questiondetail = () => {
                     type="number"
                     style={{ width: '100px', marginRight: '5px', height: '25px', borderRadius: '10px' }}
                     value={row.questionTime}
-                    onChange={(e) => handleTime(rowIndex, e.target.value)}></Input>
+                    onChange={(e) => handleTime(rowIndex, e.target.value)}
+                  />
                   <div>(Đơn vị giây)</div>
                 </div>
                 <div className='flex justify-evenly'>
-                  <div className='flex '>
-                    {
-                      Answer.map((key, answerIndex) => (
-                        <div key={answerIndex} className='flex mr-10 items-center'>
-                          <label className='w-[20px] font-semibold'>{key}:</label>
-                          <Input
-                            style={{ height: '40px', borderRadius: '8px' }}
-                            value={row.listAnswers.find(answer => answer.answerkey === key)?.answerName || ""}
-                            onChange={(e) => handleAswer(rowIndex, key, e.target.value)}></Input>
-                        </div>
-                      ))}
+                  <div className='flex'>
+                    {Answer.map((key, answerIndex) => (
+                      <div key={answerIndex} className='flex mr-10 items-center'>
+                        <label className='w-[20px] font-semibold'>{key}:</label>
+                        <Input
+                          style={{ height: '40px', borderRadius: '8px' }}
+                          value={row.listAnswers.find(answer => answer.answerkey === key)?.answerName || ""}
+                          onChange={(e) => handleAnswer(rowIndex, key, e.target.value)}
+                        />
+                      </div>
+                    ))}
                   </div>
                   <div>
                     <label className='mr-[10px]'>Chọn đáp án đúng:</label>
                     <Radio.Group
                       onChange={(e) => onChange(rowIndex, e.target.value)}
-                      value={row.listAnswers.find(answer => answer.isCorrect)?.answerkey}>
+                      value={row.listAnswers.find(answer => answer.isCorrect)?.answerkey}
+                    >
                       <Space direction="vertical">
-                        {
-                          Answer.map((key, answerIndex) => (
-                            <Radio key={answerIndex} value={key} style={{ fontWeight: '600' }}>{key}</Radio>
-                          ))
-                        }
+                        {Answer.map((key, answerIndex) => (
+                          <Radio key={answerIndex} value={key} style={{ fontWeight: '600' }}>
+                            {key}
+                          </Radio>
+                        ))}
                       </Space>
                     </Radio.Group>
                   </div>
@@ -233,8 +242,7 @@ const Questiondetail = () => {
         </div>
       </Spin>
     </div>
-
-  )
+  );
 }
 
-export default Questiondetail
+export default Questiondetail;
