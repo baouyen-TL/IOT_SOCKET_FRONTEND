@@ -12,7 +12,7 @@ const TopicList = () => {
       pageSize: 5,
       pageIndex: 1,
       orderBy: "",
-      orderByDesc: ""
+      orderByDesc: "CreateTime"
     }
   })
   const columns = [
