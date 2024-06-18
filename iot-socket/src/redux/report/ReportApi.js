@@ -31,6 +31,7 @@ export const GetDetailTopRankingApi = async(begingameId, dispatch) => {
     const PK = process.env.REACT_APP_API;
     await dispatch(QuestionResultStart());
     try{
+        debugger;
         const res = await axios.get(`${PK}/Report/report-list-ranking-detail?BeginGameId=${begingameId}`);
         await dispatch(getDetailTopRanking(res.data.data));
         return res.data.data
@@ -43,7 +44,7 @@ export const SearchReportApi = async (objRequest,dispatch) =>{
     const PK = process.env.REACT_APP_API;
     await dispatch(QuestionResultStart());
     try{
-        const response = await axios.post(`${PK}/Topic/search`,objRequest);
+        const response = await axios.post(`${PK}/BeginGame/search`,objRequest);
         dispatch(searchStatistic(response.data));
     }
     catch(error)

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { GetTopRankingApi } from '../../redux/report/ReportApi';
 import { useDispatch, useSelector } from 'react-redux';
 import TopRankingChar from '../../Components/TopRankingChar';
@@ -7,6 +7,7 @@ import { Button } from 'antd';
 
 const Ranking = () => {
     const { beginGameId } = useParams();
+    const navigate = useNavigate();
     const [datachartTopRanking,setDataChartTopRanking] = useState([]); 
     const dispatch = useDispatch();
     useEffect(()=>{
@@ -50,14 +51,18 @@ const Ranking = () => {
         const lastItem = data.pop();
         data.unshift(lastItem);
         setDataChartTopRanking(data);
-    },[topRanking])
+    },[topRanking]);
+
+    const handleDetailTopRanking = () =>{
+        navigate(`/detailTopRanking/${beginGameId}`);
+    }
   return (
     <div className='w-[100%] h-[70%] mt-[20px] flex justify-center'>
         <div className='w-[100%] h-[100%]'>
          <TopRankingChar data={datachartTopRanking}/>
         </div>
         <div className='mr-4'>
-        <Button>Thông tin chi tiết</Button>
+        <Button onClick={handleDetailTopRanking}>Thông tin chi tiết</Button>
         </div>
     </div>
   )

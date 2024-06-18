@@ -7,6 +7,9 @@ import { format } from 'date-fns';
 
 const TopicList = () => {
 
+  const functionSearchTopic = async () => {
+    return await SearchTopicApi(tableParams, dispatch)
+  }
   const [tableParams, setTableParams] = useState({
     paging: {
       pageSize: 5,
@@ -61,9 +64,13 @@ const TopicList = () => {
     navigate(`/begingame/${record.topicId}`);
   };
   const handleDeleteTopic = async (record) =>{
+    debugger;
     const result = await DeleteTopicApi(record.topicId);
     if(result)
-      message.success("Xóa chủ đề thành công");
+      {
+        functionSearchTopic();
+        message.success("Xóa chủ đề thành công");
+      }
     else
       message.error("Xóa chủ đề thất bại vui lòng thử lại sau !!!!");
   }
@@ -83,9 +90,6 @@ const TopicList = () => {
 
   // Mỗi khi chuyển trang thì gọi lại api searchTopic
   useEffect(() => {
-    const functionSearchTopic = async () => {
-      return await SearchTopicApi(tableParams, dispatch)
-    }
     functionSearchTopic();
   }, [tableParams])
 

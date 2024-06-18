@@ -30,7 +30,7 @@ export const SearchTopicApi = async (objRequest,dispatch) =>{
 export const DeleteTopicApi = async (topicId) =>{
     const PK = process.env.REACT_APP_API;
     try{
-        const response = await axios.post(`${PK}/Topic/delete`,topicId);
+        const response = await axios.delete(`${PK}/Topic/delete?TopicId=${topicId}`);
         return response.data.data;
     }
     catch(error)
@@ -39,10 +39,10 @@ export const DeleteTopicApi = async (topicId) =>{
     }
 }
 
-export const DeleteTopicAndBeginGameIdApi = async (begingameId,topicId) =>{
+export const DeleteTopicAndBeginGameIdApi = async (begingameId) =>{
     const PK = process.env.REACT_APP_API;
     try{
-        const response = await axios.post(`${PK}/Report/delete`,topicId);
+        const response = await axios.post(`${PK}/BeginGame/delete?BeginGameId=${begingameId}`);
         return response.data.data;
     }
     catch(error)

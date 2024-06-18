@@ -7,15 +7,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SearchReportApi } from '../../redux/report/ReportApi';
 
 const Statistic = () => {
+  const functionSearchRepost = async () => {
+    return await SearchReportApi(tableParams, dispatch)
+  }
   const [tableParams, setTableParams] = useState({
     paging: {
       pageSize: 5,
       pageIndex: 1,
       orderBy: "",
-      orderByDesc: ""
+      orderByDesc: "CreateTime"
     }
   })
   const columns = [
+    {
+      title: "STT",
+      dataIndex: "stt",
+      key: "stt",
+      width: 50,
+      align: "center",
+    },
     {
       title: "Tên chủ đề",
       dataIndex: "topicName",
@@ -25,8 +35,8 @@ const Statistic = () => {
     },
     {
       title: "Lớp",
-      dataIndex: "countQuestion",
-      key: "countQuestion",
+      dataIndex: "className",
+      key: "className",
       width: 150,
       align: "center",
     },
@@ -48,8 +58,8 @@ const Statistic = () => {
       render: (_, record) => {
         return (
           <div className=" flex justify-evenly">
-            <Button onClick={() => handleButtonClick(record)}>Bắt đầu</Button>
-            <Button onClick={()=>handleDeleteTopic(record)}>Xóa</Button>
+            <Button onClick={() => handleButtonClick(record)}>Chi tiết</Button>
+            <Button onClick={() => handleDeleteBeginGameId(record)}>Xóa</Button>
           </div>
         );
       },
@@ -58,20 +68,22 @@ const Statistic = () => {
 
   const navigate = useNavigate();
   const handleButtonClick = (record) => {
-    navigate(`/begingame/${record.topicId}`);
+    navigate(`/detailTopRanking/${record.beginGameId}`);
   };
-  const handleDeleteTopic = async (record) =>{
-    const result = await DeleteTopicAndBeginGameIdApi(record.topicId);
-    if(result)
+  const handleDeleteBeginGameId = async (record) => {
+    const result = await DeleteTopicAndBeginGameIdApi(record.begingameId);
+    if (result) {
+      functionSearchRepost();
       message.success("Xóa thông tin thành công");
+    }
     else
       message.error("Xóa thông tin thất bại vui lòng thử lại sau !!!!");
   }
 
   // State lưu data topic
-  const TopicResult = useSelector(state => state.topic.topics);
+  const ReportResult = useSelector(state => state.report.statistic);
   // State lưu dữ liệu phân trang
-  const PagingResult = useSelector(state => state.topic.topics.paging);
+  const PagingResult = useSelector(state => state.report.statistic.paging);
   // State tổng số phần tử
   const [totalCount, setTotalCount] = useState(0);
   // State tổng hiển thị trên 1 trang, mặc định là 5
@@ -83,10 +95,7 @@ const Statistic = () => {
 
   // Mỗi khi chuyển trang thì gọi lại api searchTopic
   useEffect(() => {
-    const functionSearchTopic = async () => {
-      return await SearchReportApi(tableParams, dispatch)
-    }
-    functionSearchTopic();
+    functionSearchRepost();
   }, [tableParams])
 
   // Nếu dữ liệu phân trang thay đổi thì set lại tổng số trang , và số lượng phần tử hiễn thị trên 1 page
@@ -114,7 +123,7 @@ const Statistic = () => {
       <div className="w-full flex justify-center mt-11">
         <Table
           columns={columns}
-          dataSource={TopicResult.data}
+          dataSource={ReportResult.data}
           pagination={{
             total: totalCount, // total number of items
             pageSize: pageSize, // items per page

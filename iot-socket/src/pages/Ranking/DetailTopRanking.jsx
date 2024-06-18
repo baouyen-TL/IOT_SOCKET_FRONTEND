@@ -13,7 +13,7 @@ const DetailTopRanking = () => {
             await GetDetailTopRankingApi(beginGameId, dispatch);
         }
         getDetailTopRanking();
-    }, [])
+    }, [beginGameId])
 
     const objDetailTopRanking = useSelector(state => state.report.detailTopRanking);
     const columns = [

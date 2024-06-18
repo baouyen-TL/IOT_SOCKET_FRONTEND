@@ -7,7 +7,7 @@ export const Report = createSlice({
         questionResult: [],
         rankingResult:[],
         detailTopRanking:[],
-        statistic:[]
+        statistic:{}
     },
     reducers:{
         QuestionResultStart: (state) => {
