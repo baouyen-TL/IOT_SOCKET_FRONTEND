@@ -196,6 +196,7 @@ const PlayGame = () => {
     else
       message.error("Lỗi lấy dữ liệu kết quả vui lòng thử lại!!!")
   }
+  console.log(questionCurent)
   return (
     <div className='flex m-4'>
       <div className='flex-1'>
@@ -203,22 +204,18 @@ const PlayGame = () => {
           <div className='mr-[15px]'>Câu {questionIndex + 1}:</div>
           <div className='w-[88%]'>
             <div className='mb-[15px]'>{questionCurent.questionName}</div>
-            {
-              questionCurent.imageUrl !== null && (
-                <div className='flex justify-center'>
-                  <img className='h-[300px]' src={questionCurent.imageUrl} alt='image'></img>
-                </div>
-              )
-            }
-            {
-              questionCurent.videoUrl !== null && (
-                <div className='flex justify-center'>
-                  <video controls>
-                    <source src={questionCurent.videoUrl} type="video/mp4" />
-                  </video>
-                </div>
-              )
-            }
+            {questionCurent.imageUrl && (
+              <div className='flex justify-center'>
+                <img className='h-[300px]' src={questionCurent.imageUrl} alt='image'></img>
+              </div>
+            )}
+            {questionCurent.videoUrl && (
+              <div className='flex justify-center'>
+                <video key={questionCurent.videoUrl} controls>
+                  <source src={questionCurent.videoUrl} type="video/mp4" />
+                </video>
+              </div>
+            )}
           </div>
         </div>
         <div className='answers-grid'>
