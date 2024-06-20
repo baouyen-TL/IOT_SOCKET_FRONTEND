@@ -23,6 +23,7 @@ const PlayGame = () => {
     questionTime: 0,
     questionName: "",
     imageUrl: null,
+    videoUrl: null,
     listAnswerDatas: []
   });
   const [connection, setConnection] = useState(null);
@@ -206,6 +207,15 @@ const PlayGame = () => {
               questionCurent.imageUrl !== null && (
                 <div className='flex justify-center'>
                   <img className='h-[300px]' src={questionCurent.imageUrl} alt='image'></img>
+                </div>
+              )
+            }
+            {
+              questionCurent.videoUrl !== null && (
+                <div className='flex justify-center'>
+                  <video controls>
+                    <source src={questionCurent.videoUrl} type="video/mp4" />
+                  </video>
                 </div>
               )
             }

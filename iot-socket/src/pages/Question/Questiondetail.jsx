@@ -11,6 +11,7 @@ const ObjQuestion = {
   questionName: "",
   questionTime: 0,
   imageUrl: "",
+  videoUrl: "",
   listAnswers: []
 };
 
@@ -73,6 +74,32 @@ const Questiondetail = () => {
     reader.onerror = error => message.error('Error reading file: ', error);
   };
 
+  const handleBeforeUploadVideo = (rowIndex, file) => {
+    const maxFileSize = 50 * 1024 * 1024; // 50 MB
+    const isVideo = file.type.startsWith('video/');
+    if (!isVideo) {
+      message.error("file video không đúng định dạng vui lòng kiểm tra lại!!!");
+      return false;
+    }
+    else if (file.size > maxFileSize) {
+      message.error("kích thước video trên 50MB! vui lòng chọn video thấp hơn");
+      return false;
+    }
+    else {
+      getBase64(file, base64 => {
+        const updatedRows = rows.map((row, index) => {
+          if (index === rowIndex) {
+            return { ...row,videoUrl : base64.split(',')[1] };
+          }
+          return row;
+        });
+        setRows(updatedRows);
+        message.success(`${file.name} file image uploaded successfully.`);
+      });
+    }
+    return false;
+  };
+
   const handleBeforeUpload = (rowIndex, file) => {
     getBase64(file, base64 => {
       const updatedRows = rows.map((row, index) => {
@@ -82,7 +109,7 @@ const Questiondetail = () => {
         return row;
       });
       setRows(updatedRows);
-      message.success(`${file.name} file uploaded successfully.`);
+      message.success(`${file.name} file video uploaded successfully.`);
     });
     return false;
   };
@@ -178,7 +205,18 @@ const Questiondetail = () => {
                         showUploadList={true}
                         beforeUpload={(file) => handleBeforeUpload(rowIndex, file)}
                       >
-                        <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                        <Button icon={<UploadOutlined />}>Click to Upload Image</Button>
+                      </Upload>
+                    </div>
+                    <div className='ml-5'>
+                      <Upload
+                        style={{ display: 'flex' }}
+                        name="file"
+                        listType="picture"
+                        showUploadList={true}
+                        beforeUpload={(file) => handleBeforeUploadVideo(rowIndex, file)}
+                      >
+                        <Button icon={<UploadOutlined />}>Click to Upload Video</Button>
                       </Upload>
                     </div>
                     {/* Delete Button */}
