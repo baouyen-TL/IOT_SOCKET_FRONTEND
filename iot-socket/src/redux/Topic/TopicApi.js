@@ -42,7 +42,7 @@ export const DeleteTopicApi = async (topicId) =>{
 export const DeleteTopicAndBeginGameIdApi = async (begingameId) =>{
     const PK = process.env.REACT_APP_API;
     try{
-        const response = await axios.post(`${PK}/BeginGame/delete?BeginGameId=${begingameId}`);
+        const response = await axios.delete(`${PK}/BeginGame/delete?BeginGameId=${begingameId}`);
         return response.data.data;
     }
     catch(error)
