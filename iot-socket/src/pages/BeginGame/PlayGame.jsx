@@ -90,6 +90,9 @@ const PlayGame = () => {
     if (lstQuestion.length > 0) {
       setQuestonCurent(lstQuestion[questionIndex]);
       setSeconds(lstQuestion[questionIndex].questionTime);
+      if (lstQuestion.length === 1) {
+        setIsEndGame(true);
+      }
     }
   }, [lstQuestion, questionIndex]);
 
@@ -98,6 +101,7 @@ const PlayGame = () => {
   }, [questionCurent]);
 
   const handleNextRequest = async () => {
+    debugger;
     const initialRemote = await initialRemoteApi();
     if (initialRemote === false) {
       message.error("Lỗi reset remote vui lòng thử lại !!!")
