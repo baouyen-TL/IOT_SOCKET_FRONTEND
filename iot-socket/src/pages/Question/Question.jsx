@@ -5,15 +5,17 @@ import Topic from "./Topic";
 import Questiondetail from "./Questiondetail";
 import { SetGlobal } from "../../redux/Global/GlobalSlice";
 import { QuestionCircleOutlined } from "@ant-design/icons";
-
+import ImageQuestion from '../../Image/CreateQuestion.png';
+import './Question.css'
 const Question = () => {
 
   const IsTopicBtn = useSelector((state) => state.global.global);
 
   return (
-    <div className="w-[100%]">
-      <div className="m-[10px] font-semibold text-xl">
-        Bắt đầu tạo bộ câu hỏi  <QuestionCircleOutlined />
+    <div className="homequestion">
+      <img src={ImageQuestion} alt="image_question"></img>
+      <div className="title">
+        Bắt đầu tạo bộ câu hỏi
       </div>
       {IsTopicBtn === false ? (
         <div className="p-36">

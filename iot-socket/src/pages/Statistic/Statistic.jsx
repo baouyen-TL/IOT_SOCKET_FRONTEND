@@ -68,7 +68,6 @@ const Statistic = () => {
 
   const navigate = useNavigate();
   const handleButtonClick = (record) => {
-    console.log(record);
     navigate(`/detailTopRanking/${record.beginGameId}`);
   };
   const handleDeleteBeginGameId = async (record) => {

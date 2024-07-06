@@ -12,6 +12,7 @@ import BeginGame from "./pages/BeginGame/BeginGame";
 import PlayGame from "./pages/BeginGame/PlayGame";
 import Ranking from "./pages/Ranking/Ranking";
 import DetailTopRanking from "./pages/Ranking/DetailTopRanking";
+import EditQuestion from "./pages/Question/EditQuestion";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/connect-remote" element = {<ConnectRemote />} />
             <Route path="/ranking/:beginGameId" element ={<Ranking/>}/>
             <Route path="/detailTopRanking/:beginGameId" element = {<DetailTopRanking/>}/>
+            <Route path="/editquestion/:topicid" element ={<EditQuestion/>}/>
           </Route>
         </Routes>
       </Router>

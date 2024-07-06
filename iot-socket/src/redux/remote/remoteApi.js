@@ -3,7 +3,6 @@ import { GetlstRemote, RemoteError, RemoteStart,DisconnectDevice, GetlistRemoteC
 
 export const GetListRemoteApi = async(dispatch) => {
     const PK = process.env.REACT_APP_API;
-    console.log(PK);
     await dispatch(RemoteStart());
     try{
         const res = await axios.post(`${PK}/Remote/list`);
@@ -15,7 +14,6 @@ export const GetListRemoteApi = async(dispatch) => {
 
 export const GetListRemoteConnectApi = async(dispatch) => {
     const PK = process.env.REACT_APP_API;
-    console.log(PK);
     await dispatch(RemoteStart());
     try{
         const res = await axios.get(`${PK}/Remote/list-connect-remote`);
@@ -27,7 +25,6 @@ export const GetListRemoteConnectApi = async(dispatch) => {
 
 export const DisconnectApi = async(dispatch) => {
     const PK = process.env.REACT_APP_API;
-    console.log(PK);
     await dispatch(RemoteStart());
     try{
         const res = await axios.post(`${PK}/Remote/disconnect-remote`);

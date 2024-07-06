@@ -8,64 +8,71 @@ import { Button } from 'antd';
 const Ranking = () => {
     const { beginGameId } = useParams();
     const navigate = useNavigate();
-    const [datachartTopRanking,setDataChartTopRanking] = useState([]); 
+    const [datachartTopRanking, setDataChartTopRanking] = useState([]);
     const dispatch = useDispatch();
-    useEffect(()=>{
-        const getRanking = async() =>{
-            await GetTopRankingApi(beginGameId,dispatch);
+    useEffect(() => {
+        const getRanking = async () => {
+            await GetTopRankingApi(beginGameId, dispatch);
         }
         getRanking();
     })
 
-    const topRanking = useSelector(state=>state.report.rankingResult); 
+    const topRanking = useSelector(state => state.report.rankingResult);
     const topRankingRef = useRef(topRanking);
     console.log(topRanking)
-    useEffect(()=>{
+    useEffect(() => {
         topRankingRef.current = topRanking
-    },[topRanking])
+    }, [topRanking])
 
-    useEffect(()=>{
+    useEffect(() => {
+        debugger;
         const data = [];
-        topRankingRef.current.forEach(element => {
-            if(element.position === 2)
-                {
+        if (topRankingRef.current.length > 0) {
+            topRankingRef.current.forEach(element => {
+                if (element.position === 2) {
                     data.push({
-                        label:element.userName,
-                        value:2
+                        label: element.userName,
+                        value: 2
                     })
                 }
-            else if(element.position === 1)
-                {
+                else if (element.position === 1) {
                     data.push({
-                        label:element.userName,
-                        value:3
+                        label: element.userName,
+                        value: 3
                     })
                 }
-                else{
+                else {
                     data.push({
-                        label:element.userName,
-                        value:1
+                        label: element.userName,
+                        value: 1
                     })
                 }
-        });
-        const lastItem = data.pop();
-        data.unshift(lastItem);
+            });
+            const lastItem = data.pop();
+            data.unshift(lastItem);
+        }
         setDataChartTopRanking(data);
-    },[topRanking]);
+    }, [topRanking]);
 
-    const handleDetailTopRanking = () =>{
+    const handleDetailTopRanking = () => {
         navigate(`/detailTopRanking/${beginGameId}`);
     }
-  return (
-    <div className='w-[100%] h-[70%] mt-[20px] flex justify-center'>
-        <div className='w-[100%] h-[100%]'>
-         <TopRankingChar data={datachartTopRanking}/>
+    const handleRollbackBeginGame = () => {
+        navigate(`/list-topic`);
+    }
+    return (
+        <div className='w-[100%] h-[70%] mt-[20px] flex justify-center'>
+            <div className='ml-4'>
+                <Button onClick={handleRollbackBeginGame}>Trở về</Button>
+            </div>
+            <div className='w-[100%] h-[100%]'>
+                <TopRankingChar data={datachartTopRanking} />
+            </div>
+            <div className='mr-4'>
+                <Button onClick={handleDetailTopRanking}>Thông tin chi tiết</Button>
+            </div>
         </div>
-        <div className='mr-4'>
-        <Button onClick={handleDetailTopRanking}>Thông tin chi tiết</Button>
-        </div>
-    </div>
-  )
+    )
 }
 
 export default Ranking

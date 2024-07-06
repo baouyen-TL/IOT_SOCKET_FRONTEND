@@ -52,6 +52,7 @@ const TopicList = () => {
         return (
           <div className=" flex justify-evenly">
             <Button onClick={() => handleButtonClick(record)}>Bắt đầu</Button>
+            <Button onClick={()=> handleButtonEditQuestion(record)}>Chỉnh sửa</Button>
             <Button onClick={()=>handleDeleteTopic(record)}>Xóa</Button>
           </div>
         );
@@ -73,6 +74,10 @@ const TopicList = () => {
       }
     else
       message.error("Xóa chủ đề thất bại vui lòng thử lại sau !!!!");
+  }
+
+  const handleButtonEditQuestion = (record) =>{
+    navigate(`/editquestion/${record.topicId}`)
   }
 
   // State lưu data topic

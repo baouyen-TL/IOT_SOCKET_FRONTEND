@@ -40,7 +40,7 @@ const TopRankingChart = ({ data }) => {
         },
         title: {
             display: true,
-            text: 'TOP ĐÀU BẢNG',
+            text: 'TOP ĐẦU BẢNG',
         },
         tooltip: {
             enabled: false, // Bật tooltip

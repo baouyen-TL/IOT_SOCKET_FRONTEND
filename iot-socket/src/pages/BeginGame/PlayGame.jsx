@@ -200,7 +200,6 @@ const PlayGame = () => {
     else
       message.error("Lỗi lấy dữ liệu kết quả vui lòng thử lại!!!")
   }
-  console.log(questionCurent)
   return (
     <div className='flex m-4'>
       <div className='flex-1'>

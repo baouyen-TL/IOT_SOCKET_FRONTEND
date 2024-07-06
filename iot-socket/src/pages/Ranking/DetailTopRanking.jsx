@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { GetDetailTopRankingApi } from '../../redux/report/ReportApi'
 import { useDispatch, useSelector } from 'react-redux';
-import { Table } from 'antd';
+import { Button, Table } from 'antd';
 
 const DetailTopRanking = () => {
-
+    const navigate = useNavigate();
     const { beginGameId } = useParams();
     const dispatch = useDispatch();
     useEffect(() => {
@@ -14,6 +14,9 @@ const DetailTopRanking = () => {
         }
         getDetailTopRanking();
     }, [beginGameId])
+    const handleRollbackBeginGame = () => {
+        navigate(`/list-topic`);
+    }
 
     const objDetailTopRanking = useSelector(state => state.report.detailTopRanking);
     const columns = [
@@ -51,10 +54,13 @@ const DetailTopRanking = () => {
             key: "ttgc",
             width: 250,
             align: "center",
-        }, 
+        },
     ];
     return (
         <div>
+            <div className='ml-4 mt-3'>
+                <Button onClick={handleRollbackBeginGame}>Trở về</Button>
+            </div>
             <div className='mt-[20px] flex justify-center font-semibold text-xl'>THÔNG TIN CHI TIẾT NGƯỜI CHƠI</div>
             <div className="w-full flex justify-center mt-11">
                 <Table

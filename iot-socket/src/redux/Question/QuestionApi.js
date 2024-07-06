@@ -14,9 +14,20 @@ export const createQuestionApi = async(question, dispatch) => {
     return null;
 }
 
+export const UpdateQuestionApi = async(question, dispatch) => {
+    const PK = process.env.REACT_APP_API;
+    await dispatch(QuestionStart());
+    try{
+        const res = await axios.post(`${PK}/Question/update`, question);
+       return res.data;
+    }catch(err){
+        await dispatch(QuestionError());
+    }
+    return null;
+}
+
 export const GetQuestionByIdApi = async(questionId, dispatch) => {
     const PK = process.env.REACT_APP_API;
-    console.log(PK);
     await dispatch(QuestionStart());
     try{
         const res = await axios.get(`${PK}/Question/get-by-id?QuestionId=${questionId}`);
@@ -33,6 +44,7 @@ export const GetQuestionByTopicIdApi = async(topicId, dispatch) => {
     try{
         const res = await axios.get(`${PK}/Question/list-question-by-topicId?TopicId=${topicId}`);
         await dispatch(getQuestionByTopicId(res.data.data.listQuestionDatas));
+        return (res.data.data.listQuestionDatas);
     }catch(err){
         await dispatch(QuestionError());
     }

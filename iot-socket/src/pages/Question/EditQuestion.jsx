@@ -1,13 +1,14 @@
 import { Button, Form, Input, message, Radio, Space, Spin, Upload } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LoadingOutlined, UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { createQuestionApi } from '../../redux/Question/QuestionApi';
+import {UpdateQuestionApi, GetQuestionByTopicIdApi } from '../../redux/Question/QuestionApi'; // import getQuestionsApi
 import { createTopicApi } from '../../redux/Topic/TopicApi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const ObjQuestion = {
   topicId: "",
+  questionId:"",
   questionName: "",
   questionTime: 0,
   imageUrl: "",
@@ -17,54 +18,48 @@ const ObjQuestion = {
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
-const Questiondetail = () => {
+const EditQuestion = () => {
+  const { topicid } = useParams();
   const navigate = useNavigate();
   const [rows, setRows] = useState([ObjQuestion]);
   const [loading, setLoading] = useState(false);
-  const TopicName = useSelector((state) => state.global.topic);
   const Answer = ["A", "B", "C", "D"];
   const dispatch = useDispatch();
 
-  const handleAddRow = () => {
-    setRows([...rows, { ...ObjQuestion }]);
-  };
+  // Fetch data on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const result = await GetQuestionByTopicIdApi(topicid, dispatch); // Call your API
+      if (result != null && result.length > 0) {
+        setRows(result);
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, [dispatch, topicid]); // Add topicid to the dependency array
+
 
   const handleDeleteRow = (rowIndex) => {
     setRows(rows.filter((_, index) => index !== rowIndex));
   };
 
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  const HanldeSaveQuestion = async () => {
-    if (rows.length > 0 && rows[0].listAnswerDatas.length > 0) {
+  const handleSaveQuestion = async () => {
+    debugger;
       setLoading(true);
-      const topicReq = {
-        topicName: TopicName
-      };
-      const resultCreateTopic = await createTopicApi(topicReq, dispatch);
-      if (resultCreateTopic != null && resultCreateTopic.data.isSuccess === true) {
-        rows.forEach((e) => (e.topicId = resultCreateTopic.data.data));
         const objRequest = {
           listQuestions: rows
         };
-        const resultCreateQuestion = await createQuestionApi(objRequest, dispatch);
+        const resultCreateQuestion = await UpdateQuestionApi(objRequest, dispatch);
         if (resultCreateQuestion != null && resultCreateQuestion.isSuccess === true) {
-          message.success("Tạo bộ câu hỏi thành công!");
-          await sleep(1000);
+          message.success("Cập nhật bộ câu hỏi thành công!");
+          await new Promise(resolve => setTimeout(resolve, 1000));
           setRows([ObjQuestion]);
-          navigate(0);
+          navigate("/list-topic");
         } else {
-          message.error("Tạo bộ câu hỏi thất bại!");
+          message.error("Cập nhật bộ câu hỏi thất bại!");
         }
-      } else {
-        message.error("Lỗi tạo chủ đề cho bộ câu hỏi, vui lòng kiểm tra lại!");
-      }
       setLoading(false);
-    } else {
-      message.error("Vui lòng nhập thông tin!");
-    }
   };
 
   const getBase64 = (file, callback) => {
@@ -78,23 +73,21 @@ const Questiondetail = () => {
     const maxFileSize = 50 * 1024 * 1024; // 50 MB
     const isVideo = file.type.startsWith('video/');
     if (!isVideo) {
-      message.error("file video không đúng định dạng vui lòng kiểm tra lại!!!");
+      message.error("File video không đúng định dạng vui lòng kiểm tra lại!!!");
       return false;
-    }
-    else if (file.size > maxFileSize) {
-      message.error("kích thước video trên 50MB! vui lòng chọn video thấp hơn");
+    } else if (file.size > maxFileSize) {
+      message.error("Kích thước video trên 50MB! vui lòng chọn video thấp hơn");
       return false;
-    }
-    else {
+    } else {
       getBase64(file, base64 => {
         const updatedRows = rows.map((row, index) => {
           if (index === rowIndex) {
-            return { ...row,videoUrl : base64.split(',')[1] };
+            return { ...row, videoUrl: base64.split(',')[1] };
           }
           return row;
         });
         setRows(updatedRows);
-        message.success(`${file.name} file image uploaded successfully.`);
+        message.success(`${file.name} file video uploaded successfully.`);
       });
     }
     return false;
@@ -109,7 +102,7 @@ const Questiondetail = () => {
         return row;
       });
       setRows(updatedRows);
-      message.success(`${file.name} file video uploaded successfully.`);
+      message.success(`${file.name} file image uploaded successfully.`);
     });
     return false;
   };
@@ -177,10 +170,10 @@ const Questiondetail = () => {
   };
 
   return (
-    <div className='questiondetail'>
+    <div>
       <Spin spinning={loading} indicator={antIcon}>
         <div className='flex justify-end mt-[20px] pr-[20px]'>
-          <Button onClick={HanldeSaveQuestion}>
+          <Button onClick={handleSaveQuestion}>
             Lưu bộ câu hỏi
           </Button>
         </div>
@@ -202,8 +195,13 @@ const Questiondetail = () => {
                         style={{ display: 'flex' }}
                         name="file"
                         listType="picture"
-                        showUploadList={true}
+                        showUploadList={{
+                          showPreviewIcon: true,
+                          showRemoveIcon: false,
+                          showDownloadIcon: false,
+                        }}
                         beforeUpload={(file) => handleBeforeUpload(rowIndex, file)}
+                        fileList={row.imageUrl ? [{ uid: '-1', name: 'image.png', status: 'done', url: row.imageUrl }] : []}
                       >
                         <Button icon={<UploadOutlined />}>Click to Upload Image</Button>
                       </Upload>
@@ -213,8 +211,13 @@ const Questiondetail = () => {
                         style={{ display: 'flex' }}
                         name="file"
                         listType="picture"
-                        showUploadList={true}
+                        showUploadList={{
+                          showPreviewIcon: true,
+                          showRemoveIcon: false,
+                          showDownloadIcon: false,
+                        }}
                         beforeUpload={(file) => handleBeforeUploadVideo(rowIndex, file)}
+                        fileList={row.videoUrl ? [{ uid: '-1', name: 'video.mp4', status: 'done', url: row.videoUrl }] : []}
                       >
                         <Button icon={<UploadOutlined />}>Click to Upload Video</Button>
                       </Upload>
@@ -247,7 +250,7 @@ const Questiondetail = () => {
                         <label className='w-[20px] font-semibold'>{key}:</label>
                         <Input
                           style={{ height: '40px', borderRadius: '8px' }}
-                          value={row.listAnswerDatas.find(answer => answer.answerKey === key)?.answerName || ""}
+                          value={row.listAnswerDatas?.find(answer => answer.answerKey === key)?.answerName || ""}
                           onChange={(e) => handleAnswer(rowIndex, key, e.target.value)}
                         />
                       </div>
@@ -259,7 +262,7 @@ const Questiondetail = () => {
                       onChange={(e) => onChange(rowIndex, e.target.value)}
                       value={row.listAnswerDatas.find(answer => answer.isCorrect)?.answerKey}
                     >
-                      <Space direction="vertical"> 
+                      <Space direction="vertical">
                         {Answer.map((key, answerIndex) => (
                           <Radio key={answerIndex} value={key} style={{ fontWeight: '600' }}>
                             {key}
@@ -272,15 +275,10 @@ const Questiondetail = () => {
               </div>
             ))}
           </div>
-          <div className='flex justify-center'>
-            <Button onClick={handleAddRow}>
-              Thêm câu hỏi
-            </Button>
-          </div>
         </div>
       </Spin>
     </div>
   );
 }
 
-export default Questiondetail;
+export default EditQuestion;
