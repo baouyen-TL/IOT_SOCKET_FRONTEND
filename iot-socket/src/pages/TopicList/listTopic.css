@@ -1,0 +1,39 @@
+.ListTopic {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 60px;
+}
+.ListTopic img {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: -1; /* Đảm bảo hình ảnh nền nằm dưới nội dung */
+}
+.ListTopic .tableListTopic{
+    margin-top: 60px;
+    width: 75%;
+}
+.ListTopic .ButtonBeginDetail{
+    background-color: rgb(0, 140, 255);
+    margin: 10px;
+    color: white;
+    font-weight: 700;
+  }
+.ListTopic .ButtonEndSoomDetail{
+    background-color: rgb(0, 255, 225);
+    color: white;
+    margin: 10px;
+    font-weight: 700;
+  }
+.ListTopic .ButtonResultDetail{
+    background-color: rgb(255 68 68);
+    color: white;
+    margin: 10px;
+    font-weight: 700;
+    width: 100%;
+  }
+  .ant-table-thead > tr > th {
+    background-color: var(--header-bg-color) !important;
+    color: var(--header-text-color) !important;
+  }

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { DisconnectApi, GetListRemoteApi } from '../../redux/remote/remoteApi';
 import * as signalR from '@microsoft/signalr';
+import ImageQuestion from '../../Image/connectwifi.png'
+import './ConnectRemote.css'
 
 const ConnectRemote = () => {
 
@@ -97,17 +99,19 @@ const ConnectRemote = () => {
   ];
 
   return (
-    <div className="w-full flex justify-center mt-11">
+    <div className="ConnectRemote">
+      <img src={ImageQuestion} alt="image_question"></img>
       <Table
         rowKey={(e) => e.remoteId}
         search={false}
         options={false}
-        className="mt-5 w-[55%] mr-10"
+        className="tableconnect"
         columns={columns}
         dataSource={lstRemote}
         pagination={{ pageSize: 5, showTotal: undefined }}
+        style={{ '--header-bg-color': '#0c9488', '--header-text-color': "white" }}
       />
-      <Button onClick={HandleDisconectDeviced}>Disconnect device</Button>
+      <Button className='ButtonDisconnect' onClick={HandleDisconectDeviced}>Disconnect device</Button>
     </div>
   )
 }

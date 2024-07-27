@@ -80,7 +80,7 @@ const TopRankingChart = ({ data }) => {
     },
   };
 
-  return <Bar data={chartData} options={chartOptions}  height={700}/>;
+  return <Bar data={chartData} options={chartOptions}  height={620}/>;
 };
 
 export default TopRankingChart;

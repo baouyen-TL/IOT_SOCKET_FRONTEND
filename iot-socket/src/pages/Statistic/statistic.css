@@ -1,0 +1,16 @@
+.Statistic {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 40px;
+}
+.Statistic img {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: -1; /* Đảm bảo hình ảnh nền nằm dưới nội dung */
+}
+.Statistic .tableStatistic{
+    margin-top: 140px;
+    width: 70%;
+}

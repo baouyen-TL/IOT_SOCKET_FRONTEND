@@ -180,14 +180,14 @@ const Questiondetail = () => {
     <div className='questiondetail'>
       <Spin spinning={loading} indicator={antIcon}>
         <div className='flex justify-end mt-[20px] pr-[20px]'>
-          <Button onClick={HanldeSaveQuestion}>
+          <Button className='ButtonSave' onClick={HanldeSaveQuestion}>
             Lưu bộ câu hỏi
           </Button>
         </div>
         <div className='p-[20px] justify-items-center'>
           <div style={{ marginTop: '5px' }}>
             {rows.map((row, rowIndex) => (
-              <div key={rowIndex} style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '10px' }}>
+              <div key={rowIndex} style={{ marginBottom: '20px', border: '4px solid #3aa8f9', padding: '22px', borderRadius:'23px' }}>
                 <div className='flex items-center mb-10'>
                   <label className='w-[100px] text-xl font-semibold'>Câu {rowIndex + 1}:</label>
                   <div className='flex justify-between items-center'>
@@ -205,7 +205,7 @@ const Questiondetail = () => {
                         showUploadList={true}
                         beforeUpload={(file) => handleBeforeUpload(rowIndex, file)}
                       >
-                        <Button icon={<UploadOutlined />}>Click to Upload Image</Button>
+                        <Button className='ButtonUpload'icon={<UploadOutlined />}>Click to Upload Image</Button>
                       </Upload>
                     </div>
                     <div className='ml-5'>
@@ -216,12 +216,12 @@ const Questiondetail = () => {
                         showUploadList={true}
                         beforeUpload={(file) => handleBeforeUploadVideo(rowIndex, file)}
                       >
-                        <Button icon={<UploadOutlined />}>Click to Upload Video</Button>
+                        <Button className='ButtonUpload' icon={<UploadOutlined />}>Click to Upload Video</Button>
                       </Upload>
                     </div>
                     {/* Delete Button */}
                     <Button
-                      type="danger"
+                      className='ButtonCancel'
                       icon={<DeleteOutlined />}
                       onClick={() => handleDeleteRow(rowIndex)}
                       style={{ marginLeft: '10px' }}
@@ -254,14 +254,14 @@ const Questiondetail = () => {
                     ))}
                   </div>
                   <div>
-                    <label className='mr-[10px]'>Chọn đáp án đúng:</label>
+                    <label className='mr-[10px] font-bold'>Chọn đáp án đúng:</label>
                     <Radio.Group
                       onChange={(e) => onChange(rowIndex, e.target.value)}
                       value={row.listAnswerDatas.find(answer => answer.isCorrect)?.answerKey}
                     >
                       <Space direction="vertical"> 
                         {Answer.map((key, answerIndex) => (
-                          <Radio key={answerIndex} value={key} style={{ fontWeight: '600' }}>
+                          <Radio key={answerIndex} value={key} style={{ fontWeight: '900' }}>
                             {key}
                           </Radio>
                         ))}
@@ -273,7 +273,7 @@ const Questiondetail = () => {
             ))}
           </div>
           <div className='flex justify-center'>
-            <Button onClick={handleAddRow}>
+            <Button className='ButtonAdd' onClick={handleAddRow}>
               Thêm câu hỏi
             </Button>
           </div>

@@ -9,6 +9,7 @@ import * as signalR from '@microsoft/signalr';
 import { SaveAnswerApi } from '../../redux/answer/AnswerApi';
 import BarChart from '../../Components/BarChart';
 import { GetQuestionResultApi } from '../../redux/report/ReportApi';
+import statisticImage from '../../Image/statistic.png';
 
 const PlayGame = () => {
   const { beginGameId, topicid } = useParams();
@@ -101,7 +102,6 @@ const PlayGame = () => {
   }, [questionCurent]);
 
   const handleNextRequest = async () => {
-    debugger;
     const initialRemote = await initialRemoteApi();
     if (initialRemote === false) {
       message.error("Lỗi reset remote vui lòng thử lại !!!")
@@ -124,8 +124,14 @@ const PlayGame = () => {
     setIsShowChart(false);
   }
 
-  const handleEndGame = () => {
+  const handleEndGame = async () => {
+    const initialRemote = await initialRemoteApi();
+    if (initialRemote === false) {
+      message.error("Lỗi reset remote vui lòng thử lại !!!")
+    }
+    else {
     navigate(`/ranking/${beginGameId}`);
+    }
   };
 
   const startTimer = () => {
@@ -201,12 +207,14 @@ const PlayGame = () => {
       message.error("Lỗi lấy dữ liệu kết quả vui lòng thử lại!!!")
   }
   return (
-    <div className='flex m-4'>
+    <div className="PlayGame">
+      <img className='imagebackground' src={statisticImage} alt="image_question"></img>
+      <div className='flex m-4 pl-[100px] w-[80%]'>
       <div className='flex-1'>
-        <div key={questionIndex} className='flex rounded-xl border-[4px] border-[#00ffc8] p-[15px]'>
-          <div className='mr-[15px]'>Câu {questionIndex + 1}:</div>
+        <div key={questionIndex} className='flex rounded-xl border-[4px] border-[#0096FF] p-[15px]'>
+          <div className='mr-[15px] font-bold'>Câu {questionIndex + 1}:</div>
           <div className='w-[88%]'>
-            <div className='mb-[15px]'>{questionCurent.questionName}</div>
+            <div className='mb-[15px] font-bold'>{questionCurent.questionName}</div>
             {questionCurent.imageUrl && (
               <div className='flex justify-center'>
                 <img className='h-[300px]' src={questionCurent.imageUrl} alt='image'></img>
@@ -234,7 +242,7 @@ const PlayGame = () => {
           isResultView === false ? (
             <div>
               <div>
-                <div className='m-[10px]'>Đã chọn: {countAnswer}/{lstRemotes.length.toString()}</div>
+                <div className='m-[10px] font-bold'>Đã chọn: {countAnswer}/{lstRemotes.length.toString()}</div>
               </div>
               <div>
                 <div className='clock'>
@@ -242,26 +250,26 @@ const PlayGame = () => {
                     <div className='clock-seconds'>{seconds} giây</div>
                   </div>
                 </div>
-                {isShowButtonBeginCount && (<Button className='ml-[5px]' onClick={() => startTimer()}>Bắt đầu</Button>)}
+                {isShowButtonBeginCount && (<Button className='ButtonBegin' onClick={() => startTimer()}>Bắt đầu</Button>)}
 
               </div>
               <div>
-                <Button className='m-[10px]' onClick={handleSoonEndGame}>Kết thúc sớm</Button>
+                <Button className='ButtonEndSoom' onClick={handleSoonEndGame}>Kết thúc sớm</Button>
               </div>
             </div>
           ) : (
             <div className='w-[100%] pl-[24px]'>
               <div className='w-[100%] mb-[10px]'>
-                <Button onClick={hanldeCheckCorrectAnswer} className='w-[100%]'>Đáp án chính xác</Button>
+                <Button onClick={hanldeCheckCorrectAnswer} className=' ButtonResult'>Đáp án chính xác</Button>
               </div>
               <div className='w-[100%] mb-[10px]'>
-                <Button className='w-[100%]' onClick={handleViewResult}>Xem kết quả</Button>
+                <Button className=' ButtonResult' onClick={handleViewResult}>Xem kết quả</Button>
               </div>
               {
                 isEndGame === false ? (
-                  <Button className='w-[100%]' onClick={handleNextRequest}>Câu tiếp theo</Button>
+                  <Button className=' ButtonResult' onClick={handleNextRequest}>Câu tiếp theo</Button>
                 ) : (
-                  <Button className='w-[100%]' onClick={handleEndGame}>Kết thúc</Button>
+                  <Button className=' ButtonResult' onClick={handleEndGame}>Kết thúc</Button>
                 )
               }
             </div>
@@ -281,6 +289,7 @@ const PlayGame = () => {
         )
       }
     </div>
+      </div>
   )
 }
 

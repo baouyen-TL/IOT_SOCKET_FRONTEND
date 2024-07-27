@@ -1,0 +1,26 @@
+/* styles.css */
+
+/* Mặc định màu chữ cho các mục menu */
+.ant-menu-item {
+    font-weight: 500;
+    font-size: large;
+    color: #ffffff !important; /* Màu chữ mặc định */
+  }
+  
+  /* Hover effect */
+  .ant-menu-item:hover,
+  .ant-menu-item:hover .ant-menu-title-content {
+    color: #ffea00 !important; /* Màu chữ khi hover */
+  }
+  
+  /* Active effect */
+  .ant-menu-item.ant-menu-item-selected,
+  .ant-menu-item.ant-menu-item-selected .ant-menu-title-content {
+    color: #ffea00 !important; /* Màu chữ khi mục được chọn */
+  }
+  
+/* Đảm bảo rằng màu chữ mặc định không bị ghi đè */
+.ant-menu-horizontal .ant-menu-item .ant-menu-title-content {
+    color: inherit !important; /* Sử dụng màu của phần tử cha */
+  }
+  

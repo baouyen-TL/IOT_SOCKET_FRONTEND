@@ -4,6 +4,8 @@ import { DeleteTopicApi, SearchTopicApi } from '../../redux/Topic/TopicApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
+import beginGameImage from '../../Image/begingame.png'
+import './listTopic.css'
 
 const TopicList = () => {
 
@@ -23,21 +25,21 @@ const TopicList = () => {
       title: "Tên chủ đề",
       dataIndex: "topicName",
       key: "topicName",
-      width: 150,
+      width: 95,
       align: "center",
     },
     {
       title: "Số lượng câu hỏi",
       dataIndex: "countQuestion",
       key: "countQuestion",
-      width: 50,
+      width: 80,
       align: "center",
     },
     {
       title: "Ngày tạo",
       dataIndex: "createTime",
       key: "createTime",
-      width: 150,
+      width: 80,
       align: "center",
       render: (text) => format(new Date(text), 'dd-MM-yyyy HH:mm:ss')
     },
@@ -51,9 +53,9 @@ const TopicList = () => {
       render: (_, record) => {
         return (
           <div className=" flex justify-evenly">
-            <Button onClick={() => handleButtonClick(record)}>Bắt đầu</Button>
-            <Button onClick={()=> handleButtonEditQuestion(record)}>Chỉnh sửa</Button>
-            <Button onClick={()=>handleDeleteTopic(record)}>Xóa</Button>
+            <Button className='ButtonBeginDetail' onClick={() => handleButtonClick(record)}>Bắt đầu</Button>
+            <Button className='ButtonEndSoomDetail' onClick={() => handleButtonEditQuestion(record)}>Chỉnh sửa</Button>
+            <Button className='ButtonResultDetail' onClick={() => handleDeleteTopic(record)}>Xóa</Button>
           </div>
         );
       },
@@ -64,19 +66,18 @@ const TopicList = () => {
   const handleButtonClick = (record) => {
     navigate(`/begingame/${record.topicId}`);
   };
-  const handleDeleteTopic = async (record) =>{
+  const handleDeleteTopic = async (record) => {
     debugger;
     const result = await DeleteTopicApi(record.topicId);
-    if(result)
-      {
-        functionSearchTopic();
-        message.success("Xóa chủ đề thành công");
-      }
+    if (result) {
+      functionSearchTopic();
+      message.success("Xóa chủ đề thành công");
+    }
     else
       message.error("Xóa chủ đề thất bại vui lòng thử lại sau !!!!");
   }
 
-  const handleButtonEditQuestion = (record) =>{
+  const handleButtonEditQuestion = (record) => {
     navigate(`/editquestion/${record.topicId}`)
   }
 
@@ -119,11 +120,13 @@ const TopicList = () => {
     })
   };
   return (
-    <div>
+    <div className='ListTopic'>
+      <img src={beginGameImage} alt="image_question"></img>
       <div className="w-full flex justify-center mt-11">
         <Table
           columns={columns}
           dataSource={TopicResult.data}
+          className='tableListTopic'
           pagination={{
             total: totalCount, // total number of items
             pageSize: pageSize, // items per page
@@ -131,8 +134,9 @@ const TopicList = () => {
           }}
           onChange={(e) => handleTableChange(e)}
           scroll={{
-            x: 1500,
+            x: 800,
           }}
+          style={{ '--header-bg-color': '#0c9488', '--header-text-color': "white" }}
         />
       </div>
     </div>

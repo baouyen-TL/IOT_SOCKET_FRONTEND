@@ -1,0 +1,23 @@
+.ConnectRemote {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+}
+.ConnectRemote img {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: -1; /* Đảm bảo hình ảnh nền nằm dưới nội dung */
+}
+.ConnectRemote .tableconnect{
+    margin-top: 70px;
+    width: 55%;
+    margin-right: 10px;
+}
+.ButtonDisconnect{
+    margin-top: 80px;
+    background-color: rgb(255 68 68);
+    color: white;
+    font-weight: 700;
+  }
