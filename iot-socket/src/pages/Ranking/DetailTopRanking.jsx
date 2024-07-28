@@ -3,7 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { GetDetailTopRankingApi } from '../../redux/report/ReportApi'
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Table } from 'antd';
-
+import statisticImage from '../../Image/statistic.png';
+import './ranking.css'
 const DetailTopRanking = () => {
     const navigate = useNavigate();
     const { beginGameId } = useParams();
@@ -57,18 +58,20 @@ const DetailTopRanking = () => {
         },
     ];
     return (
-        <div>
-            <div className='ml-4 mt-3'>
-                <Button onClick={handleRollbackBeginGame}>Trở về</Button>
-            </div>
+        <div className='Ranking'>
+        <img src={statisticImage} alt="image_question"></img>
+        <div className='mt-[80px]'>
+        <Button className='ButtonDetailGoBack' onClick={handleRollbackBeginGame}>Trở về</Button>
             <div className='mt-[20px] flex justify-center font-semibold text-xl'>THÔNG TIN CHI TIẾT NGƯỜI CHƠI</div>
             <div className="w-full flex justify-center mt-11">
                 <Table
                     columns={columns}
                     dataSource={objDetailTopRanking}
                     pagination={{ pageSize: 10, showTotal: undefined }}
+                    style={{ '--header-bg-color': '#0c9488', '--header-text-color': "white" }}
                 />
             </div>
+        </div>
         </div>
     )
 }

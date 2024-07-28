@@ -12,17 +12,21 @@ const Question = () => {
   const IsTopicBtn = useSelector((state) => state.global.global);
 
   return (
-    <div className="homequestion">
+    <div className="homequestion relative">
       <img src={ImageQuestion} alt="image_question"></img>
-      <div className="title">
-        Bắt đầu tạo bộ câu hỏi
-      </div>
+
       {IsTopicBtn === false ? (
         <div className="p-36">
+          <div className="title">
+            Bắt đầu tạo bộ câu hỏi
+          </div>
           <Topic />
         </div>
       ) : (
         <div>
+          <div className="title">
+            Bắt đầu tạo bộ câu hỏi
+          </div>
           <Questiondetail />
         </div>
       )}

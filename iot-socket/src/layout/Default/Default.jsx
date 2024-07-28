@@ -8,7 +8,7 @@ const Default = () => {
     <div>
       <HeaderPage />
       <Outlet />
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };

@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { DeleteTopicAndBeginGameIdApi } from '../../redux/Topic/TopicApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { SearchReportApi } from '../../redux/report/ReportApi';
+import statisticImage from '../../Image/statistic.png';
+import './statistic.css'
 
 const Statistic = () => {
   const functionSearchRepost = async () => {
@@ -52,14 +54,14 @@ const Statistic = () => {
       title: "Thao tác",
       key: "action",
       dataIndex: "action",
-      width: 100,
+      width: 150,
       fixed: "right",
       align: "center",
       render: (_, record) => {
         return (
           <div className=" flex justify-evenly">
-            <Button onClick={() => handleButtonClick(record)}>Chi tiết</Button>
-            <Button onClick={() => handleDeleteBeginGameId(record)}>Xóa</Button>
+            <Button className='ButtonEndSoom' onClick={() => handleButtonClick(record)}>Chi tiết</Button>
+            <Button className='ButtonResult' onClick={() => handleDeleteBeginGameId(record)}>Xóa</Button>
           </div>
         );
       },
@@ -119,11 +121,13 @@ const Statistic = () => {
     })
   };
   return (
-    <div>
+    <div className="Statistic">
+      <img src={statisticImage} alt="image_question"></img>
       <div className="w-full flex justify-center mt-11">
         <Table
           columns={columns}
           dataSource={ReportResult.data}
+          className="tableStatistic"
           pagination={{
             total: totalCount, // total number of items
             pageSize: pageSize, // items per page
@@ -131,8 +135,9 @@ const Statistic = () => {
           }}
           onChange={(e) => handleTableChange(e)}
           scroll={{
-            x: 1500,
+            x: 800,
           }}
+          style={{ '--header-bg-color': '#0c9488', '--header-text-color': "white" }}
         />
       </div>
     </div>

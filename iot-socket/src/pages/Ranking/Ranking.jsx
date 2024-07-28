@@ -25,7 +25,6 @@ const Ranking = () => {
     }, [topRanking])
 
     useEffect(() => {
-        debugger;
         const data = [];
         if (topRankingRef.current.length > 0) {
             topRankingRef.current.forEach(element => {
@@ -61,15 +60,15 @@ const Ranking = () => {
         navigate(`/list-topic`);
     }
     return (
-        <div className='w-[100%] h-[70%] mt-[20px] flex justify-center'>
+        <div className='w-[100%] h-[70%] pt-[70px] flex justify-center'>
             <div className='ml-4'>
-                <Button onClick={handleRollbackBeginGame}>Trở về</Button>
+                <Button className='ButtonGoBack' onClick={handleRollbackBeginGame}>Trở về</Button>
             </div>
             <div className='w-[100%] h-[100%]'>
                 <TopRankingChar data={datachartTopRanking} />
             </div>
             <div className='mr-4'>
-                <Button onClick={handleDetailTopRanking}>Thông tin chi tiết</Button>
+                <Button className='ButtonDetailRanking' onClick={handleDetailTopRanking}>Thông tin chi tiết</Button>
             </div>
         </div>
     )

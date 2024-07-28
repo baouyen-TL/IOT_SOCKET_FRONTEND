@@ -5,7 +5,8 @@ import { GetListRemoteConnectApi } from '../../redux/remote/remoteApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBeginGameApi } from '../../redux/BeginGame/BeginGameApi';
 import { SetTopic } from '../../redux/Global/GlobalSlice';
-import "./PlayGame.css"
+import "./BeginGame.css"
+import beginGameImage from '../../Image/begingame.png'
 
 
 const BeginGame = () => {
@@ -43,7 +44,6 @@ const BeginGame = () => {
         setListUser(newlstUser);
     }
     const handleCreateGame = async () => {
-        debugger;
         if(lstRemotes.length<=0)
             message.error("Không tìm thấy thiết bị để bắt đầu trò chơi");
 
@@ -67,6 +67,8 @@ const BeginGame = () => {
         }
     }
     return (
+        <div className='BeginGame'>
+        <img src={beginGameImage} alt="image_question"></img>
         <div className='w-[100%] flex flex-col items-center justify-center'>
             <div className='flex items-center justify-center mt-[100px] mb-[100px]'>
                 <label className='font-semibold text-lg'>Tên lớp:</label>
@@ -91,8 +93,9 @@ const BeginGame = () => {
                 }
             </div>
             <div className='flex items-center justify-center mt-8'>
-                <Button onClick={handleCreateGame}>BẮT ĐẦU</Button>
+                <Button className='ButtonBegin' onClick={handleCreateGame}>BẮT ĐẦU</Button>
             </div>
+        </div>
         </div>
     )
 }
