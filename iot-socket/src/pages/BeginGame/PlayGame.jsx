@@ -58,6 +58,7 @@ const PlayGame = () => {
     const GetLstQuestion = async () => {
       await GetQuestionByTopicIdApi(topicid, dispatch);
       await GetListRemoteConnectApi(dispatch);
+      await initialRemoteApi();
     };
     GetLstQuestion();
   }, [topicid, dispatch]);

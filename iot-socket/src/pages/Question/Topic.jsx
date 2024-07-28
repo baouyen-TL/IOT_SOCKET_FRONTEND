@@ -32,7 +32,7 @@ const Topic = () => {
             </Input>
         </div>
         <div className='flex items-center w-[100%] justify-center mt-8'>
-            <Button onClick={(e)=>handleClick()}>Tạo chủ đề</Button>
+            <Button className='ButtonAdd' onClick={(e)=>handleClick()}>Tạo chủ đề</Button>
         </div>
     </div>
   )
