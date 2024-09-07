@@ -13,7 +13,7 @@ const Question = () => {
 
   return (
     <div className="homequestion relative">
-      <img src={ImageQuestion} alt="image_question"></img>
+      <img className="backgroundImage" src={ImageQuestion} alt="image_question"></img>
 
       {IsTopicBtn === false ? (
         <div className="p-36">
